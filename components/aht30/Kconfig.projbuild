@@ -1,0 +1,28 @@
+menu "SUB:AHT30"
+    depends on SOC_I2C_SUPPORTED
+
+    config SUB_ENABLE_AHT30
+        bool "Enable AHT30 peripheral"
+        default n
+        help
+            AHT30 is a I2C based temperature and humidity sensor.
+
+    config SUB_AHT30_IIC_PORT
+        int "Set AHT30 IIC port"
+        range 0 1
+        default 0
+        depends on SUB_ENABLE_AHT30
+
+    config SUB_AHT30_IIC_ADDRESS
+        hex "Set AHT30 IIC address"
+        range 0 0x7f # 7bit address
+        default 0x3B
+        depends on SUB_ENABLE_AHT30
+
+    config SUB_AHT30_IIC_FREQUENCY
+        int "Set AHT30 IIC freq"
+        range 100000 400000
+        default 400000
+        depends on SUB_ENABLE_AHT30
+
+endmenu

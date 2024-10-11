@@ -1,0 +1,33 @@
+menu "SUB:PCA9685"
+    depends on SOC_I2C_SUPPORTED
+
+    config SUB_ENABLE_PCA9685
+        bool "Enable PCA9685 peripheral"
+        default n
+        help
+            PCA9685 is a I2C based 16-channel PWM controller.
+
+    config SUB_PCA9685_IIC_PORT
+        int "Set PCA9685 IIC port"
+        range 0 1
+        default 0
+        depends on SUB_ENABLE_PCA9685
+
+    config SUB_PCA9685_IIC_ADDRESS
+        hex "Set PCA9685 IIC address"
+        range 0 0x7f # 7bit address
+        default 0x3B
+        depends on SUB_ENABLE_PCA9685
+
+    config SUB_PCA9685_IIC_FREQUENCY
+        int "Set PCA9685 IIC freq"
+        range 100000 400000
+        default 400000
+        depends on SUB_ENABLE_PCA9685
+
+    config SUB_PCA9685_OE_GPIO_NUM
+        int "Set PCA9685 OE GPIO number"
+        default 18
+        depends on SUB_ENABLE_PCA9685
+
+endmenu
