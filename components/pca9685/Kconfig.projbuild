@@ -1,5 +1,5 @@
 menu "SUB:PCA9685"
-    depends on SOC_I2C_SUPPORTED
+    depends on SUB_ENABLE_I2C0 || SUB_ENABLE_I2C1
 
     config SUB_ENABLE_PCA9685
         bool "Enable PCA9685 peripheral"
@@ -24,6 +24,13 @@ menu "SUB:PCA9685"
         range 100000 400000
         default 400000
         depends on SUB_ENABLE_PCA9685
+
+    config SUB_PCA9685_IIC_TIMEOUT
+        int "Set PCA9685 IIC timeout"
+        default 50
+        depends on SUB_ENABLE_PCA9685
+        help
+            Wait timeout, in ms. Note: -1 means wait forever.
 
     config SUB_PCA9685_OE_GPIO_NUM
         int "Set PCA9685 OE GPIO number"

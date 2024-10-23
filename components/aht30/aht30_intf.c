@@ -42,15 +42,19 @@
 
 #include "aht30_intf.h"
 
-#if (CONFIG_SUB_AHT30_IIC_PORT == 0)
-extern i2c_master_bus_handle_t i2c0_bus_handle;
-#define AHT30_I2C_BUS i2c0_bus_handle
-#elif (CONFIG_SUB_AHT30_IIC_PORT == 1)
-extern i2c_master_bus_handle_t i2c1_bus_handle;
-#define AHT30_I2C_BUS i2c1_bus_handle
-#endif
+#if CONFIG_SUB_ENABLE_AHT30
 
-#define I2C_TIMEOUT_VAL 50
+    #if (CONFIG_SUB_AHT30_IIC_PORT == 0) && CONFIG_SUB_ENABLE_I2C0
+    extern i2c_master_bus_handle_t i2c0_bus_handle;
+    #define AHT30_I2C_BUS i2c0_bus_handle
+    #elif (CONFIG_SUB_AHT30_IIC_PORT == 1) && CONFIG_SUB_ENABLE_I2C0
+    extern i2c_master_bus_handle_t i2c1_bus_handle;
+    #define AHT30_I2C_BUS i2c1_bus_handle
+    #else
+    #error certain i2c num not found or disabled
+    #endif
+
+#endif
 
 i2c_master_dev_handle_t aht30_i2c_dev_handle;
 
@@ -109,7 +113,7 @@ uint8_t aht30_interface_iic_deinit(void)
 uint8_t aht30_interface_iic_read_cmd(uint8_t addr, uint8_t *buf, uint16_t len)
 {
 #if CONFIG_SUB_ENABLE_AHT30
-    if (ESP_OK == i2c_master_receive(aht30_i2c_dev_handle, buf, len, I2C_TIMEOUT_VAL))
+    if (ESP_OK == i2c_master_receive(aht30_i2c_dev_handle, buf, len, CONFIG_SUB_AHT30_IIC_TIMEOUT))
         return 0;
     else
         return 1;
@@ -131,7 +135,7 @@ uint8_t aht30_interface_iic_read_cmd(uint8_t addr, uint8_t *buf, uint16_t len)
 uint8_t aht30_interface_iic_write_cmd(uint8_t addr, uint8_t *buf, uint16_t len)
 {
 #if CONFIG_SUB_ENABLE_AHT30
-    if (ESP_OK == i2c_master_transmit(aht30_i2c_dev_handle, buf, len, I2C_TIMEOUT_VAL))
+    if (ESP_OK == i2c_master_transmit(aht30_i2c_dev_handle, buf, len, CONFIG_SUB_AHT30_IIC_TIMEOUT))
         return 0;
     else
         return 1;

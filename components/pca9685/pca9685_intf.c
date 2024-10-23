@@ -43,15 +43,19 @@
 
 #include "pca9685_intf.h"
 
-#if (CONFIG_SUB_PCA9685_IIC_PORT == 0)
-extern i2c_master_bus_handle_t i2c0_bus_handle;
-#define PCA9685_I2C_BUS i2c0_bus_handle
-#elif (CONFIG_SUB_PCA9685_IIC_PORT == 1)
-extern i2c_master_bus_handle_t i2c1_bus_handle;
-#define PCA9685_I2C_BUS i2c1_bus_handle
-#endif
+#if CONFIG_SUB_ENABLE_PCA9685
 
-#define I2C_TIMEOUT_VAL 50
+    #if (CONFIG_SUB_PCA9685_IIC_PORT == 0) && CONFIG_SUB_ENABLE_I2C0
+    extern i2c_master_bus_handle_t i2c0_bus_handle;
+    #define PCA9685_I2C_BUS i2c0_bus_handle
+    #elif (CONFIG_SUB_PCA9685_IIC_PORT == 1) && CONFIG_SUB_ENABLE_I2C1
+    extern i2c_master_bus_handle_t i2c1_bus_handle;
+    #define PCA9685_I2C_BUS i2c1_bus_handle
+    #else
+    #error certain i2c num not found or disabled
+    #endif
+
+#endif
 
 i2c_master_dev_handle_t pca9685_i2c_dev_handle;
 
@@ -118,7 +122,7 @@ uint8_t pca9685_interface_iic_write(uint8_t addr, uint8_t reg, uint8_t *buf, uin
     temp_buf[0] = addr;
     memcpy(&temp_buf[1], buf, len);
 
-    esp_err_t ret = i2c_master_transmit(pca9685_i2c_dev_handle, temp_buf, len + 1, I2C_TIMEOUT_VAL);
+    esp_err_t ret = i2c_master_transmit(pca9685_i2c_dev_handle, temp_buf, len + 1, CONFIG_SUB_PCA9685_IIC_TIMEOUT);
 
     free(temp_buf);
 
@@ -145,7 +149,7 @@ uint8_t pca9685_interface_iic_write(uint8_t addr, uint8_t reg, uint8_t *buf, uin
 uint8_t pca9685_interface_iic_read(uint8_t addr, uint8_t reg, uint8_t *buf, uint16_t len)
 {
 #if CONFIG_SUB_ENABLE_PCA9685
-    if (ESP_OK == i2c_master_transmit_receive(pca9685_i2c_dev_handle, &reg, 1, buf, len, I2C_TIMEOUT_VAL))
+    if (ESP_OK == i2c_master_transmit_receive(pca9685_i2c_dev_handle, &reg, 1, buf, len, CONFIG_SUB_PCA9685_IIC_TIMEOUT))
         return 0;
     else
         return 1;

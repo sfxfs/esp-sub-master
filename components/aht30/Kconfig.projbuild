@@ -1,5 +1,5 @@
 menu "SUB:AHT30"
-    depends on SOC_I2C_SUPPORTED
+    depends on SUB_ENABLE_I2C0 || SUB_ENABLE_I2C1
 
     config SUB_ENABLE_AHT30
         bool "Enable AHT30 peripheral"
@@ -24,5 +24,12 @@ menu "SUB:AHT30"
         range 100000 400000
         default 400000
         depends on SUB_ENABLE_AHT30
+
+    config SUB_AHT30_IIC_TIMEOUT
+        int "Set AHT30 IIC timeout"
+        default 50
+        depends on SUB_ENABLE_AHT30
+        help
+            Wait timeout, in ms. Note: -1 means wait forever.
 
 endmenu
