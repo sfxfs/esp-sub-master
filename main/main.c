@@ -1,40 +1,17 @@
 #include <stdio.h>
 
-#include "driver/i2c_master.h" // esp_driver_i2c
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_log.h"
 
 #include "pca9685_app.h"
 #include "aht30_app.h"
+#include "sub_intf_init.h"
 
-i2c_master_bus_handle_t i2c0_bus_handle;
-i2c_master_bus_handle_t i2c1_bus_handle;
-
-int i2c_all_bus_init()
-{
-    i2c_master_bus_config_t i2c_bus_config = {
-        .clk_source = I2C_CLK_SRC_DEFAULT,
-        .i2c_port = 0,
-        .scl_io_num = 12,
-        .sda_io_num = 13,
-        .glitch_ignore_cnt = 7,
-    };
-    if (ESP_OK != i2c_new_master_bus(&i2c_bus_config, &i2c0_bus_handle))
-        return 1;
-
-    i2c_bus_config.i2c_port = 1;
-    i2c_bus_config.scl_io_num = 14;
-    i2c_bus_config.sda_io_num = 15;
-    if (ESP_OK != i2c_new_master_bus(&i2c_bus_config, &i2c1_bus_handle))
-        return 1;
-
-    return 0;
-}
 
 void app_main(void)
 {
-    if (0 == i2c_all_bus_init())
+    if (0 == sub_all_intf_init())
     {
         if (0 == pca9685_app_init(PCA9685_ADDRESS_A000000, 50))
         {

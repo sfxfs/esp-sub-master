@@ -7,29 +7,27 @@ menu "SUB:AHT30"
         help
             AHT30 is a I2C based temperature and humidity sensor.
 
-    config SUB_AHT30_IIC_PORT
-        int "Set AHT30 IIC port"
-        range 0 1
-        default 0
-        depends on SUB_ENABLE_AHT30
+    if SUB_ENABLE_AHT30
+        config SUB_AHT30_IIC_PORT
+            int "Set AHT30 IIC port"
+            range 0 1
+            default 0
 
-    config SUB_AHT30_IIC_ADDRESS
-        hex "Set AHT30 IIC address"
-        range 0 0x7f # 7bit address
-        default 0x3B
-        depends on SUB_ENABLE_AHT30
+        config SUB_AHT30_IIC_ADDRESS
+            hex "Set AHT30 IIC address"
+            range 0 0x7f # 7bit address
+            default 0x3B
 
-    config SUB_AHT30_IIC_FREQUENCY
-        int "Set AHT30 IIC freq"
-        range 100000 400000
-        default 400000
-        depends on SUB_ENABLE_AHT30
+        config SUB_AHT30_IIC_FREQUENCY
+            int "Set AHT30 IIC freq"
+            range 100000 400000
+            default 400000
 
-    config SUB_AHT30_IIC_TIMEOUT
-        int "Set AHT30 IIC timeout"
-        default 50
-        depends on SUB_ENABLE_AHT30
-        help
-            Wait timeout, in ms. Note: -1 means wait forever.
+        config SUB_AHT30_IIC_TIMEOUT
+            int "Set AHT30 IIC timeout"
+            default 50
+            help
+                Wait timeout, in ms. Note: -1 means wait forever.
+    endif
 
 endmenu
