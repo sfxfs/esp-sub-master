@@ -39,7 +39,4 @@ menu "SUB:Interface"
     menu "Interface SPI"
     endmenu
 
-    menu "Interface UART"
-    endmenu
-
 endmenu

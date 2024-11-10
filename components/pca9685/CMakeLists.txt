@@ -1,5 +1,5 @@
 idf_component_register(SRCS "pca9685_app.c"
-                    "pca9685_drv.c"
-                    "pca9685_intf.c"
-                    INCLUDE_DIRS "."
+                            "pca9685_drv.c"
+                            "pca9685_intf.c"
+                    INCLUDE_DIRS "include"
                     PRIV_REQUIRES esp_driver_i2c esp_driver_gpio)
