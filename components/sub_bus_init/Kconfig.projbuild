@@ -1,0 +1,44 @@
+menu "SUB:Bus Interface"
+
+    menu "Interface I2C"
+        menu "I2C0 Config"
+            config SUB_ENABLE_I2C0
+                bool "Enable interface"
+                default n
+                depends on SOC_I2C_SUPPORTED
+
+            if SUB_ENABLE_I2C0
+                config SUB_I2C0_SCL_PIN
+                    int "Set SCL pin num"
+                    default 6
+
+                config SUB_I2C0_SDA_PIN
+                    int "Set SDA pin num"
+                    default 7
+            endif
+        endmenu
+
+        menu "I2C1 Config"
+            config SUB_ENABLE_I2C1
+                bool "Enable interface"
+                default n
+                depends on SOC_I2C_SUPPORTED
+
+            if SUB_ENABLE_I2C1
+                config SUB_I2C1_SCL_PIN
+                    int "Set SCL pin num"
+                    default 8
+                    depends on SUB_ENABLE_I2C1
+
+                config SUB_I2C1_SDA_PIN
+                    int "Set SDA pin num"
+                    default 9
+                    depends on SUB_ENABLE_I2C1
+            endif
+        endmenu
+    endmenu
+
+    menu "Interface SPI"
+    endmenu
+
+endmenu
