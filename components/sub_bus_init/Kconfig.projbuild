@@ -39,6 +39,47 @@ menu "SUB:Bus Interface"
     endmenu
 
     menu "Interface SPI"
+        menu "SPI2 Config"
+            config SUB_ENABLE_SPI2
+                bool "Enable interface"
+                default n
+                depends on SOC_GPSPI_SUPPORTED
+
+            if SUB_ENABLE_SPI2
+                config SUB_SPI2_CLK_PIN
+                    int "Set CLK pin num"
+                    default 10
+
+                config SUB_SPI2_MOSI_PIN
+                    int "Set MOSI pin num"
+                    default 11
+
+                config SUB_SPI2_MISO_PIN
+                    int "Set MISO pin num"
+                    default 12
+            endif
+        endmenu
+
+        menu "SPI3 Config"
+            config SUB_ENABLE_SPI3
+                bool "Enable interface"
+                default n
+                depends on SOC_GPSPI_SUPPORTED
+
+            if SUB_ENABLE_SPI3
+                config SUB_SPI3_CLK_PIN
+                    int "Set CLK pin num"
+                    default 13
+
+                config SUB_SPI3_MOSI_PIN
+                    int "Set MOSI pin num"
+                    default 14
+
+                config SUB_SPI3_MISO_PIN
+                    int "Set MISO pin num"
+                    default 15
+            endif
+        endmenu
     endmenu
 
 endmenu
