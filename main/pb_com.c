@@ -7,7 +7,6 @@
 
 #include "pb_decode.h"
 #include "pb_encode.h"
-#include "pb_common.h"
 
 #include "navi_master.pb.h"
 
@@ -77,7 +76,7 @@ static int protobuf_command_rpc(uint8_t *data, size_t size)
 
     if (!status)
     {
-        ESP_LOGW(TAG, "Decode failed: %s", PB_GET_ERROR(&stream));
+        ESP_LOGW(TAG, "Decode %d bytes data failed: %s", size, PB_GET_ERROR(&stream));
         return -1;
     }
 
@@ -86,13 +85,6 @@ static int protobuf_command_rpc(uint8_t *data, size_t size)
 
 int protobuf_commu_init(void)
 {
-    if (uart_driver_install(CONFIG_SUB_PROTOBUF_UART_PORT,
-                            NAVI_MASTER_PB_H_MAX_SIZE, NAVI_MASTER_PB_H_MAX_SIZE,
-                            CONFIG_SUB_PROTOBUF_UART_QUEUE_SIZE, &uart_queue, 0) != ESP_OK)
-    {
-        ESP_LOGE(TAG, "Driver installation failed");
-        return -1;
-    }
     uart_config_t uart_config = {
         .baud_rate = CONFIG_SUB_PROTOBUF_UART_BAUDRATE,
         .data_bits = UART_DATA_8_BITS,
@@ -107,6 +99,13 @@ int protobuf_commu_init(void)
     if (ESP_OK != uart_set_pin(CONFIG_SUB_PROTOBUF_UART_PORT, CONFIG_SUB_PROTOBUF_UART_TX_PIN, CONFIG_SUB_PROTOBUF_UART_RX_PIN, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE))
         return -1;
 #endif
+    if (uart_driver_install(CONFIG_SUB_PROTOBUF_UART_PORT,
+                            NAVI_MASTER_PB_H_MAX_SIZE * 2, NAVI_MASTER_PB_H_MAX_SIZE * 2,
+                            CONFIG_SUB_PROTOBUF_UART_QUEUE_SIZE, &uart_queue, 0) != ESP_OK)
+    {
+        ESP_LOGE(TAG, "Driver installation failed");
+        return -1;
+    }
     return 0;
 }
 
