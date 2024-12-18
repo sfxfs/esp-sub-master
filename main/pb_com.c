@@ -154,11 +154,11 @@ static void uart_event_task(void *pvParameters)
                 break;
             // Event of UART parity check error
             case UART_PARITY_ERR:
-                ESP_LOGD(TAG, "uart parity error");
+                ESP_LOGW(TAG, "uart parity error");
                 break;
             // Event of UART frame error
             case UART_FRAME_ERR:
-                ESP_LOGD(TAG, "uart frame error");
+                ESP_LOGW(TAG, "uart frame error");
                 break;
             // Others
             default:
@@ -210,14 +210,15 @@ int protobuf_commu_send_resp(const pb_msgdesc_t *messagetype, void *message)
     bool status = encode_unionmessage_resp(&stream, messagetype, &message);
     if (!status)
     {
-        ESP_LOGD(TAG, "encoding failed");
+        ESP_LOGW(TAG, "encoding failed");
         return -1;
     }
 
     if (uart_write_bytes(CONFIG_SUB_PROTOBUF_UART_PORT, data, stream.bytes_written) < 0)
     {
-        ESP_LOGD(TAG, "protobuf uart write failed");
+        ESP_LOGW(TAG, "protobuf uart write failed");
         return -1;
     }
+    ESP_LOGD(TAG, "protobuf uart write success");
     return 0;
 }

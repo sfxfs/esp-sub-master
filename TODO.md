@@ -2,7 +2,7 @@
 
 ### 必要
 
-- [ ] protobuf 通信实现
+- [x] protobuf 通信实现
 - [ ] pca9685 驱动
 - [ ] Dshot 驱动
 
