@@ -7,6 +7,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+
 #include "driver/rmt_encoder.h"
 
 #ifdef __cplusplus
