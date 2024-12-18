@@ -1,0 +1,22 @@
+menu "SUB:DSHOT"
+    depends on SOC_RMT_SUPPORTED
+
+    config SUB_DSHOT_RESOLUTION
+        int "Resolution of Dshot"
+        default 32000000
+        help
+            Resolution of DSHOT, 32000000 is 32MHz.
+
+    config SUB_DSHOT_BAUD_RATE
+        int "Set Dshot baud rate"
+        default 300000
+        help
+            Baud rate of DSHOT, 300000 is DSHOT300.
+
+    config SUB_DSHOT_POST_DELAY_US
+        int "Extra delay between each frame"
+        default 50
+        help
+            Related to the baud rate.
+
+endmenu
