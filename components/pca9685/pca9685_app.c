@@ -103,7 +103,7 @@ uint8_t pca9685_app_init(pca9685_address_t addr, uint16_t hz)
     }
     
     /* set frequency */
-    res = pca9685_output_frequency_convert_to_register(&gs_handle, PCA9685_OSCILLATOR_INTERNAL_FREQUENCY, hz, (uint8_t *)&reg);
+    res = pca9685_output_frequency_convert_to_register(&gs_handle, PCA9685_APP_DEFAULT_OSCILLATOR_FREQUENCY, hz, (uint8_t *)&reg);
     if (res != 0)
     {
         pca9685_interface_debug_print("pca9685: output frequency convert to register failed.\n");
@@ -122,8 +122,8 @@ uint8_t pca9685_app_init(pca9685_address_t addr, uint16_t hz)
         return 1;
     }
     
-    /* disable external clock pin */
-    res = pca9685_set_external_clock_pin(&gs_handle, PCA9685_BOOL_FALSE);
+    /* enable external clock pin */
+    res = pca9685_set_external_clock_pin(&gs_handle, PCA9685_BOOL_TRUE);
     if (res != 0)
     {
         pca9685_interface_debug_print("pca9685: set external clock pin failed.\n");

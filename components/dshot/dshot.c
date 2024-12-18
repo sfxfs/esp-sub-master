@@ -13,6 +13,23 @@
 
 #include "dshot.h"
 
+/**
+ * @brief Throttle representation in DShot protocol
+ */
+typedef struct {
+    uint16_t throttle;  /*!< Throttle value */
+    bool telemetry_req; /*!< Telemetry request */
+} dshot_esc_throttle_t;
+
+/**
+ * @brief Type of Dshot ESC encoder configuration
+ */
+typedef struct {
+    uint32_t resolution;    /*!< Encoder resolution, in Hz */
+    uint32_t baud_rate;     /*!< Dshot protocol runs at several different baud rates, e.g. DSHOT300 = 300k baud rate */
+    uint32_t post_delay_us; /*!< Delay time after one Dshot frame, in microseconds */
+} dshot_esc_encoder_config_t;
+
 static const char *TAG = "dshot_encoder";
 
 /**
