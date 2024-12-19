@@ -216,6 +216,18 @@ int rmt_dshot_init(dshot_handle_t *handle, gpio_num_t gpio_num)
         return -1;
     }
 
+    rmt_transmit_config_t tx_config = {
+        .loop_count = -1, // infinite loop
+    };
+    dshot_esc_throttle_t throttle = {
+        .throttle = 0,
+        .telemetry_req = false, // telemetry is not supported in this example
+    };
+    if (ESP_OK != rmt_transmit(handle->channel, handle->encoder, &throttle, sizeof(throttle), &tx_config))
+    {
+        return -1;
+    }
+
     return 0;
 }
 

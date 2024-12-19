@@ -1,4 +1,4 @@
-menu "SUB:Main:ProtoBuf"
+menu "SUB:ProtoBuf-RPC"
     config SUB_PROTOBUF_UART_PORT
         int "Which UARTx will be used"
         default 0

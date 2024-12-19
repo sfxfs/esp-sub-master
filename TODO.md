@@ -6,7 +6,8 @@
 - [x] pca9685 驱动
 - [x] Dshot 驱动
 - [ ] pca9685 测试
-- [ ] dshot 测试
+- [x] dshot 测试
+- [ ] protobuf rpc 相关方法实现
 
 ### 额外
 

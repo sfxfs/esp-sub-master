@@ -10,7 +10,7 @@
 
 #include "navi_master.pb.h"
 
-#include "pb_com.h"
+#include "pb_rpc.h"
 
 static const char *TAG = "protobuf_commu";
 
