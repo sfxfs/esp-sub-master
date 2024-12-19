@@ -1,6 +1,7 @@
-#include "sub_intf_init.h"
 #include "sub_i2c.h"
 #include "sub_spi.h"
+
+#include "sub_intf_init.h"
 
 esp_err_t sub_all_intf_init(void)
 {

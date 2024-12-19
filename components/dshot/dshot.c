@@ -4,12 +4,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#include "driver/rmt_tx.h"
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
 #include "esp_log.h"
 #include "esp_check.h"
 #include "sdkconfig.h"
+#include "driver/rmt_tx.h"
+#include "freertos/task.h"
+#include "freertos/FreeRTOS.h"
 
 #include "dshot.h"
 

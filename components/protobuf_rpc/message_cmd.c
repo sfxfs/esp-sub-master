@@ -1,15 +1,39 @@
+#include "sdkconfig.h"
+
 #include "dshot.h"
 
 #include "message_cmd.h"
 
-extern dshot_handle_t dshot_chan0;
-extern dshot_handle_t dshot_chan1;
-extern dshot_handle_t dshot_chan2;
-extern dshot_handle_t dshot_chan3;
-extern dshot_handle_t dshot_chan4;
-extern dshot_handle_t dshot_chan5;
-extern dshot_handle_t dshot_chan6;
-extern dshot_handle_t dshot_chan7;
+static dshot_handle_t dshot_chan0;
+static dshot_handle_t dshot_chan1;
+static dshot_handle_t dshot_chan2;
+static dshot_handle_t dshot_chan3;
+static dshot_handle_t dshot_chan4;
+static dshot_handle_t dshot_chan5;
+static dshot_handle_t dshot_chan6;
+static dshot_handle_t dshot_chan7;
+
+static int thruster_init(void)
+{
+    int ret = 0;
+    ret += rmt_dshot_init(&dshot_chan0, CONFIG_SUB_PROTOBUF_THRUSTER0_PIN);
+    ret += rmt_dshot_init(&dshot_chan1, CONFIG_SUB_PROTOBUF_THRUSTER1_PIN);
+    ret += rmt_dshot_init(&dshot_chan2, CONFIG_SUB_PROTOBUF_THRUSTER2_PIN);
+    ret += rmt_dshot_init(&dshot_chan3, CONFIG_SUB_PROTOBUF_THRUSTER3_PIN);
+    ret += rmt_dshot_init(&dshot_chan4, CONFIG_SUB_PROTOBUF_THRUSTER4_PIN);
+    ret += rmt_dshot_init(&dshot_chan5, CONFIG_SUB_PROTOBUF_THRUSTER5_PIN);
+    ret += rmt_dshot_init(&dshot_chan6, CONFIG_SUB_PROTOBUF_THRUSTER6_PIN);
+    ret += rmt_dshot_init(&dshot_chan7, CONFIG_SUB_PROTOBUF_THRUSTER7_PIN);
+    return ret;
+}
+
+int message_cmd_init(void)
+{
+    int ret = 0;
+    ret += thruster_init();
+    // other cmd init ...
+    return ret;
+}
 
 void message_thruster_cmd(ThrusterCommand *msg)
 {

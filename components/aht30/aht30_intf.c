@@ -34,11 +34,11 @@
  * </table>
  */
 
-#include "driver/i2c_master.h" // esp_driver_i2c
-#include "sdkconfig.h"
 #include "esp_log.h"
-#include "freertos/FreeRTOS.h"
+#include "sdkconfig.h"
 #include "freertos/task.h"
+#include "freertos/FreeRTOS.h"
+#include "driver/i2c_master.h" // esp_driver_i2c
 
 #include "aht30_intf.h"
 

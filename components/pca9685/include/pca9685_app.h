@@ -65,7 +65,7 @@ extern "C"{
 #define PCA9685_APP_DEFAULT_SUBADDRESS_1                0xE2                                              /**< 0xE2 */
 #define PCA9685_APP_DEFAULT_SUBADDRESS_2                0xE4                                              /**< 0xE4 */
 #define PCA9685_APP_DEFAULT_SUBADDRESS_3                0xE8                                              /**< 0xE8 */
-#define PCA9685_APP_DEFAULT_OSCILLATOR_FREQUENCY        50000000                                          /**< 25MHz */
+#define PCA9685_APP_DEFAULT_OSCILLATOR_FREQUENCY        50000000                                          /**< 50MHz */
 
 /**
  * @brief     basic example init

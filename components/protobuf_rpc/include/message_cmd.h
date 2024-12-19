@@ -3,6 +3,10 @@
 
 #include "navi_master.pb.h"
 
+// for main
+int message_cmd_init(void);
+
+// for component itself
 void message_thruster_cmd(ThrusterCommand *msg);
 void message_arm_cmd(ArmCommand *msg);
 
