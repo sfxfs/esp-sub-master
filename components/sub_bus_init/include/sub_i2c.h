@@ -2,6 +2,7 @@
 #define SUB_INTF_INIT_I2C_H
 
 #include "esp_err.h"
+#include "driver/i2c_master.h" // esp_driver_i2c
 
 #include "sdkconfig.h"
 

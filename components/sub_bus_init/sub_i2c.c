@@ -1,5 +1,3 @@
-#include "driver/i2c_master.h" // esp_driver_i2c
-
 #include "sub_i2c.h"
 
 #if CONFIG_SUB_ENABLE_I2C0
