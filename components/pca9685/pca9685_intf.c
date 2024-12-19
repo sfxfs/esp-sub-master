@@ -34,12 +34,14 @@
  * </table>
  */
 
-#include "esp_log.h"
-#include "sdkconfig.h"
-#include "driver/gpio.h"
-#include "freertos/task.h"
 #include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+
+#include "esp_log.h"
+#include "driver/gpio.h"
 #include "driver/i2c_master.h" // esp_driver_i2c
+
+#include "sdkconfig.h"
 
 #include "pca9685_intf.h"
 

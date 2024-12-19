@@ -2,9 +2,10 @@
 #include <stdio.h>
 
 // offical components
-#include "esp_log.h"
-#include "freertos/task.h"
 #include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "esp_log.h"
+
 
 // components
 #include "dshot.h"

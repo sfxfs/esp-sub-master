@@ -1,5 +1,6 @@
-#include "sdkconfig.h"
 #include "driver/spi_master.h" // esp_driver_i2c
+
+#include "sdkconfig.h"
 
 #include "sub_spi.h"
 

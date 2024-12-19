@@ -1,15 +1,17 @@
-#include "esp_log.h"
-#include "sdkconfig.h"
-#include "driver/uart.h"
-#include "freertos/task.h"
-#include "freertos/queue.h"
 #include "freertos/FreeRTOS.h"
+#include "freertos/queue.h"
+#include "freertos/task.h"
+
+#include "esp_log.h"
+#include "driver/uart.h"
 
 #include "pb_decode.h"
 #include "pb_encode.h"
 
 #include "message_cmd.h"
 #include "navi_master.pb.h"
+
+#include "sdkconfig.h"
 
 #include "pb_rpc.h"
 

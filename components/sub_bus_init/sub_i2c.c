@@ -1,5 +1,6 @@
-#include "sdkconfig.h"
 #include "driver/i2c_master.h" // esp_driver_i2c
+
+#include "sdkconfig.h"
 
 #include "sub_i2c.h"
 

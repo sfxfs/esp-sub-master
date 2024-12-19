@@ -1,6 +1,6 @@
-#include "sdkconfig.h"
-
 #include "dshot.h"
+
+#include "sdkconfig.h"
 
 #include "message_cmd.h"
 
