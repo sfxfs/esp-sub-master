@@ -40,6 +40,8 @@
 #include "esp_log.h"
 #include "driver/i2c_master.h" // esp_driver_i2c
 
+#include "sub_i2c.h"
+
 #include "sdkconfig.h"
 
 #include "aht30_intf.h"
@@ -47,10 +49,8 @@
 #if CONFIG_SUB_ENABLE_AHT30
 
     #if (CONFIG_SUB_AHT30_IIC_PORT == 0) && CONFIG_SUB_ENABLE_I2C0
-    extern i2c_master_bus_handle_t i2c0_bus_handle;
     #define AHT30_I2C_BUS i2c0_bus_handle
     #elif (CONFIG_SUB_AHT30_IIC_PORT == 1) && CONFIG_SUB_ENABLE_I2C0
-    extern i2c_master_bus_handle_t i2c1_bus_handle;
     #define AHT30_I2C_BUS i2c1_bus_handle
     #else
     #error certain i2c num not found or disabled

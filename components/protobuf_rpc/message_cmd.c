@@ -4,14 +4,8 @@
 
 #include "message_cmd.h"
 
-static dshot_handle_t dshot_chan0;
-static dshot_handle_t dshot_chan1;
-static dshot_handle_t dshot_chan2;
-static dshot_handle_t dshot_chan3;
-static dshot_handle_t dshot_chan4;
-static dshot_handle_t dshot_chan5;
-static dshot_handle_t dshot_chan6;
-static dshot_handle_t dshot_chan7;
+static dshot_handle_t dshot_chan0, dshot_chan1, dshot_chan2, dshot_chan3,
+                        dshot_chan4, dshot_chan5, dshot_chan6, dshot_chan7;
 
 static int thruster_init(void)
 {
