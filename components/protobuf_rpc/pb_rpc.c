@@ -71,10 +71,10 @@ static int protobuf_command_rpc(uint8_t *data, size_t size)
         ESP_LOGD(TAG, "Got ThrusterCommand");
         message_thruster_cmd(&msg);
     }
-    else if (type == ArmCommand_fields)
+    else if (type == PWMDevCommand_fields)
     {
-        ArmCommand msg = {};
-        status = decode_unionmessage_contents(&stream, ArmCommand_fields, &msg);
+        PWMDevCommand msg = {};
+        status = decode_unionmessage_contents(&stream, PWMDevCommand_fields, &msg);
         ESP_LOGD(TAG, "Got ArmCommand");
         // to do ...
     }

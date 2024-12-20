@@ -48,8 +48,3 @@ void message_thruster_cmd(ThrusterCommand *msg)
     if (msg->has_throttle7)
         rmt_dshot_write_throttle(dshot_chan7, msg->throttle7);
 }
-
-void message_arm_cmd(ArmCommand *msg)
-{
-
-}
