@@ -99,7 +99,7 @@ uint8_t pca9685_app_deinit(void);
  *            0.0 <= delay_percent <= 100.0
  *            0.0 <= high_duty_cycle_percent <= 100.0
  */
-uint8_t pca9685_app_write(pca9685_channel_t channel, float delay_percent, float high_duty_cycle_percent);
+uint8_t pca9685_app_write(pca9685_channel_t channel, uint16_t high_duty_cycle_us);
 
 /**
  * @}
