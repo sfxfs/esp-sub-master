@@ -65,7 +65,7 @@ extern "C"{
 #define PCA9685_APP_DEFAULT_SUBADDRESS_1                0xE2                                              /**< 0xE2 */
 #define PCA9685_APP_DEFAULT_SUBADDRESS_2                0xE4                                              /**< 0xE4 */
 #define PCA9685_APP_DEFAULT_SUBADDRESS_3                0xE8                                              /**< 0xE8 */
-#define PCA9685_APP_DEFAULT_OSCILLATOR_FREQUENCY        50000000                                          /**< 25MHz */
+#define PCA9685_APP_DEFAULT_OSCILLATOR_FREQUENCY        50000000                                          /**< 50MHz */
 
 /**
  * @brief     basic example init
@@ -99,7 +99,7 @@ uint8_t pca9685_app_deinit(void);
  *            0.0 <= delay_percent <= 100.0
  *            0.0 <= high_duty_cycle_percent <= 100.0
  */
-uint8_t pca9685_app_write(pca9685_channel_t channel, float delay_percent, float high_duty_cycle_percent);
+uint8_t pca9685_app_write(pca9685_channel_t channel, uint16_t high_duty_cycle_us);
 
 /**
  * @}

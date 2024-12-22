@@ -1,5 +1,5 @@
-#ifndef SUB_MAIN_PB_COM_H
-#define SUB_MAIN_PB_COM_H
+#ifndef SUB_PB_RPC_H
+#define SUB_PB_RPC_H
 
 #include "pb_common.h"
 

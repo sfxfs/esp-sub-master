@@ -37,6 +37,7 @@
 #include "pca9685_app.h"
 
 static pca9685_handle_t gs_handle;        /**< pca9685 handle */
+static uint16_t g_output_freq_hz;
 
 /**
  * @brief     basic example init
@@ -111,6 +112,7 @@ uint8_t pca9685_app_init(pca9685_address_t addr, uint16_t hz)
         
         return 1;
     }
+    g_output_freq_hz = hz;
     
     /* set pre scale */
     res = pca9685_set_prescaler(&gs_handle, reg);
@@ -327,13 +329,19 @@ uint8_t pca9685_app_deinit(void)
  *            0.0 <= delay_percent <= 100.0
  *            0.0 <= high_duty_cycle_percent <= 100.0
  */
-uint8_t pca9685_app_write(pca9685_channel_t channel, float delay_percent, float high_duty_cycle_percent)
+uint8_t pca9685_app_write(pca9685_channel_t channel, uint16_t high_duty_cycle_us)
 {
     uint8_t res;
     uint16_t on_count, off_count;
-    
+
+    if (g_output_freq_hz == 0)
+        return 1;
+    float high_duty_cycle_percent = 1.f / (float)g_output_freq_hz; // 周期 in s
+    high_duty_cycle_percent *= 1000.f * 1000.f; // s to us
+    high_duty_cycle_percent = (float)high_duty_cycle_us / high_duty_cycle_percent; // final val
+
     /* convert data */
-    res = pca9685_pwm_convert_to_register(&gs_handle, delay_percent, high_duty_cycle_percent, (uint16_t *)&on_count, (uint16_t *)&off_count);
+    res = pca9685_pwm_convert_to_register(&gs_handle, 0.f, high_duty_cycle_percent, (uint16_t *)&on_count, (uint16_t *)&off_count);
     if (res != 0)
     {
         return 1;

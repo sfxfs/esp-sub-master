@@ -1,16 +1,19 @@
-#include "driver/uart.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 #include "freertos/task.h"
+
 #include "esp_log.h"
-#include "sdkconfig.h"
+#include "driver/uart.h"
 
 #include "pb_decode.h"
 #include "pb_encode.h"
 
+#include "message_cmd.h"
 #include "navi_master.pb.h"
 
-#include "pb_com.h"
+#include "sdkconfig.h"
+
+#include "pb_rpc.h"
 
 static const char *TAG = "protobuf_commu";
 
@@ -65,13 +68,15 @@ static int protobuf_command_rpc(uint8_t *data, size_t size)
     {
         ThrusterCommand msg = {};
         status = decode_unionmessage_contents(&stream, ThrusterCommand_fields, &msg);
-        ESP_LOGD(TAG, "Got MsgType1");
+        ESP_LOGD(TAG, "Got ThrusterCommand");
+        message_thruster_cmd(&msg);
     }
-    else if (type == ArmCommand_fields)
+    else if (type == PWMDevCommand_fields)
     {
-        ArmCommand msg = {};
-        status = decode_unionmessage_contents(&stream, ArmCommand_fields, &msg);
-        ESP_LOGD(TAG, "Got MsgType2");
+        PWMDevCommand msg = {};
+        status = decode_unionmessage_contents(&stream, PWMDevCommand_fields, &msg);
+        ESP_LOGD(TAG, "Got ArmCommand");
+        message_pwmDev_cmd(&msg);
     }
 
     if (!status)

@@ -34,27 +34,15 @@
  * </table>
  */
 
-#include "driver/i2c_master.h" // esp_driver_i2c
-#include "sdkconfig.h"
-#include "esp_log.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
+#include "esp_log.h"
+#include "driver/i2c_master.h" // esp_driver_i2c
+
+#include "sdkconfig.h"
+
 #include "aht30_intf.h"
-
-#if CONFIG_SUB_ENABLE_AHT30
-
-    #if (CONFIG_SUB_AHT30_IIC_PORT == 0) && CONFIG_SUB_ENABLE_I2C0
-    extern i2c_master_bus_handle_t i2c0_bus_handle;
-    #define AHT30_I2C_BUS i2c0_bus_handle
-    #elif (CONFIG_SUB_AHT30_IIC_PORT == 1) && CONFIG_SUB_ENABLE_I2C0
-    extern i2c_master_bus_handle_t i2c1_bus_handle;
-    #define AHT30_I2C_BUS i2c1_bus_handle
-    #else
-    #error certain i2c num not found or disabled
-    #endif
-
-#endif
 
 i2c_master_dev_handle_t aht30_i2c_dev_handle;
 
@@ -68,6 +56,18 @@ i2c_master_dev_handle_t aht30_i2c_dev_handle;
 uint8_t aht30_interface_iic_init(void)
 {
 #if CONFIG_SUB_ENABLE_AHT30
+    esp_err_t handle_ret;
+    i2c_master_bus_handle_t aht30_i2c_handle;
+    #if (CONFIG_SUB_AHT30_IIC_PORT == 0) && CONFIG_SUB_ENABLE_I2C0
+    handle_ret = i2c_master_get_bus_handle(0, &aht30_i2c_handle);
+    #elif (CONFIG_SUB_AHT30_IIC_PORT == 1) && CONFIG_SUB_ENABLE_I2C0
+    handle_ret = i2c_master_get_bus_handle(1, &aht30_i2c_handle);
+    #else
+    #error certain i2c num not found or disabled
+    #endif
+    if (ESP_OK != handle_ret)
+        return 1;   // interface not init
+
     i2c_device_config_t i2c_dev_conf = {
         .device_address = CONFIG_SUB_AHT30_IIC_ADDRESS,
         .scl_speed_hz = CONFIG_SUB_AHT30_IIC_FREQUENCY,

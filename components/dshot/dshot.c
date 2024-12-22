@@ -4,11 +4,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#include "driver/rmt_tx.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+
 #include "esp_log.h"
 #include "esp_check.h"
+#include "driver/rmt_tx.h"
+
 #include "sdkconfig.h"
 
 #include "dshot.h"
@@ -212,6 +214,18 @@ int rmt_dshot_init(dshot_handle_t *handle, gpio_num_t gpio_num)
     }
 
     if (ESP_OK != rmt_enable(handle->channel))
+    {
+        return -1;
+    }
+
+    rmt_transmit_config_t tx_config = {
+        .loop_count = -1, // infinite loop
+    };
+    dshot_esc_throttle_t throttle = {
+        .throttle = 0,
+        .telemetry_req = false, // telemetry is not supported in this example
+    };
+    if (ESP_OK != rmt_transmit(handle->channel, handle->encoder, &throttle, sizeof(throttle), &tx_config))
     {
         return -1;
     }

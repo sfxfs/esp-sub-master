@@ -34,28 +34,16 @@
  * </table>
  */
 
-#include "driver/i2c_master.h" // esp_driver_i2c
-#include "driver/gpio.h"
-#include "sdkconfig.h"
-#include "esp_log.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
+#include "esp_log.h"
+#include "driver/gpio.h"
+#include "driver/i2c_master.h"
+
+#include "sdkconfig.h"
+
 #include "pca9685_intf.h"
-
-#if CONFIG_SUB_ENABLE_PCA9685
-
-    #if (CONFIG_SUB_PCA9685_IIC_PORT == 0) && CONFIG_SUB_ENABLE_I2C0
-    extern i2c_master_bus_handle_t i2c0_bus_handle;
-    #define PCA9685_I2C_BUS i2c0_bus_handle
-    #elif (CONFIG_SUB_PCA9685_IIC_PORT == 1) && CONFIG_SUB_ENABLE_I2C1
-    extern i2c_master_bus_handle_t i2c1_bus_handle;
-    #define PCA9685_I2C_BUS i2c1_bus_handle
-    #else
-    #error certain i2c num not found or disabled
-    #endif
-
-#endif
 
 i2c_master_dev_handle_t pca9685_i2c_dev_handle;
 
@@ -69,11 +57,23 @@ i2c_master_dev_handle_t pca9685_i2c_dev_handle;
 uint8_t pca9685_interface_iic_init(void)
 {
 #if CONFIG_SUB_ENABLE_PCA9685
+    esp_err_t handle_ret;
+    i2c_master_bus_handle_t pca9685_i2c_handle;
+    #if (CONFIG_SUB_PCA9685_IIC_PORT == 0) && CONFIG_SUB_ENABLE_I2C0
+    handle_ret = i2c_master_get_bus_handle(0, &pca9685_i2c_handle);
+    #elif (CONFIG_SUB_PCA9685_IIC_PORT == 1) && CONFIG_SUB_ENABLE_I2C1
+    handle_ret = i2c_master_get_bus_handle(1, &pca9685_i2c_handle);
+    #else
+    #error certain i2c num not found or disabled
+    #endif
+    if (ESP_OK != handle_ret)
+        return 1;   // interface not init
+
     i2c_device_config_t i2c_dev_conf = {
         .device_address = CONFIG_SUB_PCA9685_IIC_ADDRESS,
         .scl_speed_hz = CONFIG_SUB_PCA9685_IIC_FREQUENCY,
     };
-    if (ESP_OK == i2c_master_bus_add_device(PCA9685_I2C_BUS, &i2c_dev_conf, &pca9685_i2c_dev_handle))
+    if (ESP_OK == i2c_master_bus_add_device(pca9685_i2c_handle, &i2c_dev_conf, &pca9685_i2c_dev_handle))
         return 0;
     else
         return 1;   // NO_MEM

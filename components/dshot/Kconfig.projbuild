@@ -3,7 +3,7 @@ menu "SUB:DSHOT"
 
     config SUB_DSHOT_RESOLUTION
         int "Resolution of Dshot"
-        default 32000000
+        default 40000000
         help
             Resolution of DSHOT, 32000000 is 32MHz.
 
