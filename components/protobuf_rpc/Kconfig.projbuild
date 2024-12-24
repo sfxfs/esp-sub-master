@@ -2,7 +2,7 @@ menu "SUB:ProtoBuf-RPC"
     menu "Interface"
         config SUB_PROTOBUF_UART_PORT
             int "Which UARTx will be used"
-            default 0
+            default 2
             help
                 The interface that used to communicate with sub-navi.
 
@@ -20,20 +20,20 @@ menu "SUB:ProtoBuf-RPC"
 
         config SUB_PROTOBUF_UART_CUSTOM_PINS
             bool "Use custom pins"
-            default n
+            default y
             help
                 If you want to use custom pins for UARTx, enable this option.
 
         if SUB_PROTOBUF_UART_CUSTOM_PINS
             config SUB_PROTOBUF_UART_TX_PIN
                 int "UARTx TX pin"
-                default 17
+                default 37
                 help
                     The TX pin of UARTx.
 
             config SUB_PROTOBUF_UART_RX_PIN
                 int "UARTx RX pin"
-                default 16
+                default 36
                 help
                     The RX pin of UARTx.
         endif
@@ -42,19 +42,19 @@ menu "SUB:ProtoBuf-RPC"
     menu "Thruster"
         config SUB_PROTOBUF_THRUSTER0_PIN
             int "Thruster0 pin"
-            default 18
+            default 27
             help
                 The pin of thruster channel 0.
 
         config SUB_PROTOBUF_THRUSTER1_PIN
             int "Thruster1 pin"
-            default 19
+            default 26
             help
                 The pin of thruster channel 1.
 
         config SUB_PROTOBUF_THRUSTER2_PIN
             int "Thruster2 pin"
-            default 20
+            default 25
             help
                 The pin of thruster channel 2.
 
@@ -72,19 +72,19 @@ menu "SUB:ProtoBuf-RPC"
 
         config SUB_PROTOBUF_THRUSTER5_PIN
             int "Thruster5 pin"
-            default 23
+            default 19
             help
                 The pin of thruster channel 5.
 
         config SUB_PROTOBUF_THRUSTER6_PIN
             int "Thruster6 pin"
-            default 24
+            default 23
             help
                 The pin of thruster channel 6.
 
         config SUB_PROTOBUF_THRUSTER7_PIN
             int "Thruster7 pin"
-            default 25
+            default 18
             help
                 The pin of thruster channel 7.
     endmenu

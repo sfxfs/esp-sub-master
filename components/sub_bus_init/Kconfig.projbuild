@@ -6,16 +6,16 @@ menu "SUB:Bus Interface"
         menu "I2C0 Config"
             config SUB_ENABLE_I2C0
                 bool "Enable interface"
-                default n
+                default y
 
             if SUB_ENABLE_I2C0
                 config SUB_I2C0_SCL_PIN
                     int "Set SCL pin num"
-                    default 6
+                    default 17
 
                 config SUB_I2C0_SDA_PIN
                     int "Set SDA pin num"
-                    default 7
+                    default 5
             endif
         endmenu
 

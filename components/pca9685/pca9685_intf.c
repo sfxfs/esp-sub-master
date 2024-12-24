@@ -119,7 +119,7 @@ uint8_t pca9685_interface_iic_write(uint8_t addr, uint8_t reg, uint8_t *buf, uin
     if (NULL == temp_buf)
         return 1;
 
-    temp_buf[0] = addr;
+    temp_buf[0] = reg;
     memcpy(&temp_buf[1], buf, len);
 
     esp_err_t ret = i2c_master_transmit(pca9685_i2c_dev_handle, temp_buf, len + 1, CONFIG_SUB_PCA9685_IIC_TIMEOUT);
