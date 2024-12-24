@@ -167,7 +167,7 @@ uint8_t pca9685_interface_iic_read(uint8_t addr, uint8_t reg, uint8_t *buf, uint
  */
 uint8_t pca9685_interface_oe_init(void)
 {
-#if CONFIG_SUB_ENABLE_PCA9685
+#if CONFIG_SUB_ENABLE_PCA9685 && CONFIG_SUB_PCA9685_OE_GPIO_ENABLE
     if (GPIO_IS_VALID_OUTPUT_GPIO(CONFIG_SUB_PCA9685_OE_GPIO_NUM) == false)
         return 1;
 
@@ -183,7 +183,7 @@ uint8_t pca9685_interface_oe_init(void)
     else
         return 1;
 #else
-    return 1;   // disabled
+    return 0;   // disabled
 #endif
 }
 
@@ -196,13 +196,13 @@ uint8_t pca9685_interface_oe_init(void)
  */
 uint8_t pca9685_interface_oe_deinit(void)
 {
-#if CONFIG_SUB_ENABLE_PCA9685
+#if CONFIG_SUB_ENABLE_PCA9685 && CONFIG_SUB_PCA9685_OE_GPIO_ENABLE
     if (ESP_OK == gpio_reset_pin(CONFIG_SUB_PCA9685_OE_GPIO_NUM))
         return 0;
     else
         return 1;
 #else
-    return 1;   // disabled
+    return 0;   // disabled
 #endif
 }
 
@@ -216,13 +216,13 @@ uint8_t pca9685_interface_oe_deinit(void)
  */
 uint8_t pca9685_interface_oe_write(uint8_t value)
 {
-#if CONFIG_SUB_ENABLE_PCA9685
+#if CONFIG_SUB_ENABLE_PCA9685 && CONFIG_SUB_PCA9685_OE_GPIO_ENABLE
     if (ESP_OK == gpio_set_level(CONFIG_SUB_PCA9685_OE_GPIO_NUM, value))
         return 0;
     else
         return 1;
 #else
-    return 1;   // disabled
+    return 0;   // disabled
 #endif
 }
 

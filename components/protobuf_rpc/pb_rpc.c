@@ -212,7 +212,7 @@ int protobuf_commu_send_resp(const pb_msgdesc_t *messagetype, void *message)
     uint8_t data[NAVI_MASTER_PB_H_MAX_SIZE];
     pb_ostream_t stream = pb_ostream_from_buffer(data, sizeof(data));
 
-    bool status = encode_unionmessage_resp(&stream, messagetype, &message);
+    bool status = encode_unionmessage_resp(&stream, messagetype, message);
     if (!status)
     {
         ESP_LOGW(TAG, "encoding failed");

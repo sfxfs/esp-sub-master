@@ -5,7 +5,7 @@ menu "SUB:DSHOT"
         int "Resolution of Dshot"
         default 40000000
         help
-            Resolution of DSHOT, 32000000 is 32MHz.
+            Resolution of DSHOT, 40000000 is 40MHz.
 
     config SUB_DSHOT_BAUD_RATE
         int "Set Dshot baud rate"
