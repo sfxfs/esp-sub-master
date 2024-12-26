@@ -68,14 +68,14 @@ static int protobuf_command_rpc(uint8_t *data, size_t size)
     {
         ThrusterCommand msg = {};
         status = decode_unionmessage_contents(&stream, ThrusterCommand_fields, &msg);
-        ESP_LOGD(TAG, "Got ThrusterCommand");
+        ESP_LOGI(TAG, "Got ThrusterCommand");
         message_thruster_cmd(&msg);
     }
     else if (type == PWMDevCommand_fields)
     {
         PWMDevCommand msg = {};
         status = decode_unionmessage_contents(&stream, PWMDevCommand_fields, &msg);
-        ESP_LOGD(TAG, "Got ArmCommand");
+        ESP_LOGI(TAG, "Got ArmCommand");
         message_pwmDev_cmd(&msg);
     }
 
@@ -179,7 +179,7 @@ static void uart_event_task(void *pvParameters)
 
 int protobuf_commu_start_thread(void)
 {
-    if (pdPASS == xTaskCreate(uart_event_task, "uart_event_task", 2048, NULL, 12, NULL))
+    if (pdPASS == xTaskCreate(uart_event_task, "uart_event_task", 4096, NULL, 12, NULL))
         return 0;
     return -1;
 }
