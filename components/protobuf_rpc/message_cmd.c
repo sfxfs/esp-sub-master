@@ -12,9 +12,11 @@ static const char *TAG = "protobuf_commu_rpc_cmd";
 static dshot_handle_t dshot_chan0, dshot_chan1, dshot_chan2, dshot_chan3,
                         dshot_chan4, dshot_chan5, dshot_chan6, dshot_chan7;
 
+#if CONFIG_SUB_PROTOBUF_THRUSTERS_ENABLE
 static int thruster_init(void)
 {
     int ret = 0;
+
     ret += rmt_dshot_init(&dshot_chan0, CONFIG_SUB_PROTOBUF_THRUSTER0_PIN);
     ret += rmt_dshot_init(&dshot_chan1, CONFIG_SUB_PROTOBUF_THRUSTER1_PIN);
     ret += rmt_dshot_init(&dshot_chan2, CONFIG_SUB_PROTOBUF_THRUSTER2_PIN);
@@ -25,7 +27,7 @@ static int thruster_init(void)
     ret += rmt_dshot_init(&dshot_chan7, CONFIG_SUB_PROTOBUF_THRUSTER7_PIN);
     return ret;
 }
-
+#endif
 #if CONFIG_SUB_ENABLE_PCA9685
 static int pwmDev_init(void)
 {
@@ -39,7 +41,9 @@ static int pwmDev_init(void)
 int message_cmd_init(void)
 {
     int ret = 0;
+#if CONFIG_SUB_PROTOBUF_THRUSTERS_ENABLE
     ret += thruster_init();
+#endif
 #if CONFIG_SUB_ENABLE_PCA9685
     ret += pwmDev_init();
 #endif
@@ -49,6 +53,9 @@ int message_cmd_init(void)
 
 void message_thruster_cmd(ThrusterCommand *msg)
 {
+#if !CONFIG_SUB_PROTOBUF_THRUSTERS_ENABLE
+    return;
+#endif
     if (msg->has_throttle0)
     {
         ESP_LOGI(TAG, "dshot_chan0: %ld", msg->throttle0);
