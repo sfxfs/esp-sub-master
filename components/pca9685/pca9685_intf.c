@@ -245,6 +245,6 @@ void pca9685_interface_debug_print(const char *const fmt, ...)
 {
     va_list list;
     va_start(list, fmt);
-    esp_log_writev(ESP_LOG_DEBUG, "sub_pca9685", fmt, list);
+    esp_log_writev(ESP_LOG_INFO, "sub_pca9685", fmt, list);
     va_end(list);
 }
