@@ -1,4 +1,90 @@
-menu "SUB:ProtoBuf-RPC"
+menu "SUB::Bus Interface"
+
+    menu "Interface I2C"
+        depends on SOC_I2C_SUPPORTED
+
+        menu "I2C0 Config"
+            config SUB_ENABLE_I2C0
+                bool "Enable interface"
+                default y
+
+            if SUB_ENABLE_I2C0
+                config SUB_I2C0_SCL_PIN
+                    int "Set SCL pin num"
+                    default 17
+
+                config SUB_I2C0_SDA_PIN
+                    int "Set SDA pin num"
+                    default 5
+            endif
+        endmenu
+
+        menu "I2C1 Config"
+            config SUB_ENABLE_I2C1
+                bool "Enable interface"
+                default n
+
+            if SUB_ENABLE_I2C1
+                config SUB_I2C1_SCL_PIN
+                    int "Set SCL pin num"
+                    default 8
+                    depends on SUB_ENABLE_I2C1
+
+                config SUB_I2C1_SDA_PIN
+                    int "Set SDA pin num"
+                    default 9
+                    depends on SUB_ENABLE_I2C1
+            endif
+        endmenu
+    endmenu
+
+    menu "Interface SPI"
+        depends on SOC_GPSPI_SUPPORTED
+
+        menu "SPI2 Config"
+            config SUB_ENABLE_SPI2
+                bool "Enable interface"
+                default n
+
+            if SUB_ENABLE_SPI2
+                config SUB_SPI2_CLK_PIN
+                    int "Set CLK pin num"
+                    default 10
+
+                config SUB_SPI2_MOSI_PIN
+                    int "Set MOSI pin num"
+                    default 11
+
+                config SUB_SPI2_MISO_PIN
+                    int "Set MISO pin num"
+                    default 12
+            endif
+        endmenu
+
+        menu "SPI3 Config"
+            config SUB_ENABLE_SPI3
+                bool "Enable interface"
+                default n
+
+            if SUB_ENABLE_SPI3
+                config SUB_SPI3_CLK_PIN
+                    int "Set CLK pin num"
+                    default 13
+
+                config SUB_SPI3_MOSI_PIN
+                    int "Set MOSI pin num"
+                    default 14
+
+                config SUB_SPI3_MISO_PIN
+                    int "Set MISO pin num"
+                    default 15
+            endif
+        endmenu
+    endmenu
+
+endmenu
+
+menu "SUB::ProtoBuf-RPC"
     menu "Interface"
         config SUB_PROTOBUF_UART_PORT
             int "Which UARTx will be used"

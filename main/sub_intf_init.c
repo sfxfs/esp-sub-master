@@ -5,7 +5,7 @@
 
 #include "sub_intf_init.h"
 
-int sub_all_intf_init(void)
+int sub_bus_intf_init(void)
 {
     int ret = ESP_OK;
 // IIC ------------------------

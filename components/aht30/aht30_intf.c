@@ -55,16 +55,10 @@ i2c_master_dev_handle_t aht30_i2c_dev_handle;
  */
 uint8_t aht30_interface_iic_init(void)
 {
-#if CONFIG_SUB_ENABLE_AHT30
     esp_err_t handle_ret;
     i2c_master_bus_handle_t aht30_i2c_handle;
-    #if (CONFIG_SUB_AHT30_IIC_PORT == 0) && CONFIG_SUB_ENABLE_I2C0
-    handle_ret = i2c_master_get_bus_handle(0, &aht30_i2c_handle);
-    #elif (CONFIG_SUB_AHT30_IIC_PORT == 1) && CONFIG_SUB_ENABLE_I2C0
-    handle_ret = i2c_master_get_bus_handle(1, &aht30_i2c_handle);
-    #else
-    #error certain i2c num not found or disabled
-    #endif
+
+    handle_ret = i2c_master_get_bus_handle(CONFIG_SUB_AHT30_IIC_PORT, &aht30_i2c_handle);
     if (ESP_OK != handle_ret)
         return 1;   // interface not init
 
@@ -72,13 +66,10 @@ uint8_t aht30_interface_iic_init(void)
         .device_address = CONFIG_SUB_AHT30_IIC_ADDRESS,
         .scl_speed_hz = CONFIG_SUB_AHT30_IIC_FREQUENCY,
     };
-    if (ESP_OK == i2c_master_bus_add_device(AHT30_I2C_BUS, &i2c_dev_conf, &aht30_i2c_dev_handle))
+    if (ESP_OK == i2c_master_bus_add_device(aht30_i2c_handle, &i2c_dev_conf, &aht30_i2c_dev_handle))
         return 0;
     else
         return 1;   // NO_MEM
-#else
-    return 1;   // disabled
-#endif
 }
 
 /**
@@ -90,14 +81,10 @@ uint8_t aht30_interface_iic_init(void)
  */
 uint8_t aht30_interface_iic_deinit(void)
 {
-#if CONFIG_SUB_ENABLE_AHT30
     if (ESP_OK == i2c_master_bus_rm_device(aht30_i2c_dev_handle))
         return 0;
     else
         return 1;
-#else
-    return 1;   // disabled
-#endif
 }
 
 /**
@@ -112,14 +99,10 @@ uint8_t aht30_interface_iic_deinit(void)
  */
 uint8_t aht30_interface_iic_read_cmd(uint8_t addr, uint8_t *buf, uint16_t len)
 {
-#if CONFIG_SUB_ENABLE_AHT30
     if (ESP_OK == i2c_master_receive(aht30_i2c_dev_handle, buf, len, CONFIG_SUB_AHT30_IIC_TIMEOUT))
         return 0;
     else
         return 1;
-#else
-    return 1;   // disabled
-#endif
 }
 
 /**
@@ -134,14 +117,10 @@ uint8_t aht30_interface_iic_read_cmd(uint8_t addr, uint8_t *buf, uint16_t len)
  */
 uint8_t aht30_interface_iic_write_cmd(uint8_t addr, uint8_t *buf, uint16_t len)
 {
-#if CONFIG_SUB_ENABLE_AHT30
     if (ESP_OK == i2c_master_transmit(aht30_i2c_dev_handle, buf, len, CONFIG_SUB_AHT30_IIC_TIMEOUT))
         return 0;
     else
         return 1;
-#else
-    return 1;   // disabled
-#endif
 }
 
 /**

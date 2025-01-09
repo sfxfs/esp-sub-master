@@ -1,33 +1,25 @@
-menu "SUB:AHT30"
-    depends on SUB_ENABLE_I2C0 || SUB_ENABLE_I2C1
+menu "AHT30 Driver Configuration"
+    depends on SOC_I2C_SUPPORTED
 
-    config SUB_ENABLE_AHT30
-        bool "Enable AHT30 peripheral"
-        default n
+    config SUB_AHT30_IIC_PORT
+        int "Set AHT30 IIC port"
+        range 0 1
+        default 0
+
+    config SUB_AHT30_IIC_ADDRESS
+        hex "Set AHT30 IIC address"
+        range 0 0x7f # 7bit address
+        default 0x3B
+
+    config SUB_AHT30_IIC_FREQUENCY
+        int "Set AHT30 IIC freq"
+        range 100000 400000
+        default 400000
+
+    config SUB_AHT30_IIC_TIMEOUT
+        int "Set AHT30 IIC timeout"
+        default 50
         help
-            AHT30 is a I2C based temperature and humidity sensor.
-
-    if SUB_ENABLE_AHT30
-        config SUB_AHT30_IIC_PORT
-            int "Set AHT30 IIC port"
-            range 0 1
-            default 0
-
-        config SUB_AHT30_IIC_ADDRESS
-            hex "Set AHT30 IIC address"
-            range 0 0x7f # 7bit address
-            default 0x3B
-
-        config SUB_AHT30_IIC_FREQUENCY
-            int "Set AHT30 IIC freq"
-            range 100000 400000
-            default 400000
-
-        config SUB_AHT30_IIC_TIMEOUT
-            int "Set AHT30 IIC timeout"
-            default 50
-            help
-                Wait timeout, in ms. Note: -1 means wait forever.
-    endif
+            Wait timeout, in ms. Note: -1 means wait forever.
 
 endmenu

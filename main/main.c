@@ -6,10 +6,9 @@
 #include "freertos/task.h"
 #include "esp_log.h"
 
-
-// components
-#include "message_cmd.h"
-#include "pb_rpc.h"
+// main
+#include "sub_rpc.h"
+#include "sub_rpc_func.h"
 #include "sub_intf_init.h"
 
 static const char *TAG = "main";
@@ -17,7 +16,7 @@ static const char *TAG = "main";
 void app_main(void)
 {
     // 各总线端口初始化 spi iic
-    if (0 != sub_all_intf_init())
+    if (0 != sub_bus_intf_init())
     {
         for (;;)
         {
@@ -27,7 +26,7 @@ void app_main(void)
     }
 
     // protobuf通信用到的外设初始化
-    if (0 != message_cmd_init())
+    if (0 != sub_rpc_handle_func_init())
     {
         for (;;)
         {
@@ -37,7 +36,7 @@ void app_main(void)
     }
 
     // protobuf通信初始化
-    if (0 != protobuf_commu_init())
+    if (0 != sub_rpc_init())
     {
         for (;;)
         {
@@ -47,7 +46,7 @@ void app_main(void)
     }
 
     // protobuf通信线程启动
-    if (0 != protobuf_commu_start_thread())
+    if (0 != sub_rpc_start_thread())
     {
         for (;;)
         {

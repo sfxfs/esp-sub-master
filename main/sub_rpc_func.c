@@ -5,7 +5,7 @@
 
 #include "sdkconfig.h"
 
-#include "message_cmd.h"
+#include "sub_rpc_func.h"
 
 static const char *TAG = "protobuf_commu_rpc_cmd";
 
@@ -49,9 +49,6 @@ static int thruster_write(int channel, float value)
 
 #endif
 
-
-#if CONFIG_SUB_ENABLE_PCA9685
-
 static int pwmDev_init(void)
 {
     if (0 != pca9685_app_init(PCA9685_ADDRESS_A000000, 50)) // 50Hz
@@ -65,10 +62,7 @@ static int pwmDev_write(int channel, uint32_t value)
     return pca9685_app_write(channel, value);
 }
 
-#endif
-
-
-int message_cmd_init(void)
+int sub_rpc_handle_func_init(void)
 {
     int ret = 0;
 #if CONFIG_SUB_PROTOBUF_THRUSTERS_ENABLE
@@ -81,7 +75,7 @@ int message_cmd_init(void)
     return ret;
 }
 
-void message_thruster_cmd(ThrusterCommand *msg)
+void handle_message_thruster_cmd(ThrusterCommand *msg)
 {
 #if !CONFIG_SUB_PROTOBUF_THRUSTERS_ENABLE
     return;
@@ -128,7 +122,7 @@ void message_thruster_cmd(ThrusterCommand *msg)
     }
 }
 
-void message_pwmDev_cmd(PWMDevCommand *msg)
+void handle_message_pwmDev_cmd(PWMDevCommand *msg)
 {
 #if !CONFIG_SUB_ENABLE_PCA9685
     return;

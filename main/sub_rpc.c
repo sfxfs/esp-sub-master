@@ -8,12 +8,12 @@
 #include "pb_decode.h"
 #include "pb_encode.h"
 
-#include "message_cmd.h"
+#include "sub_rpc_func.h"
 #include "navi_master.pb.h"
 
 #include "sdkconfig.h"
 
-#include "pb_rpc.h"
+#include "sub_rpc.h"
 
 static const char *TAG = "protobuf_commu";
 
@@ -69,14 +69,14 @@ static int protobuf_command_rpc(uint8_t *data, size_t size)
         ThrusterCommand msg = {};
         status = decode_unionmessage_contents(&stream, ThrusterCommand_fields, &msg);
         ESP_LOGI(TAG, "Got ThrusterCommand");
-        message_thruster_cmd(&msg);
+        handle_message_thruster_cmd(&msg);
     }
     else if (type == PWMDevCommand_fields)
     {
         PWMDevCommand msg = {};
         status = decode_unionmessage_contents(&stream, PWMDevCommand_fields, &msg);
         ESP_LOGI(TAG, "Got ArmCommand");
-        message_pwmDev_cmd(&msg);
+        handle_message_pwmDev_cmd(&msg);
     }
 
     if (!status)
@@ -88,7 +88,7 @@ static int protobuf_command_rpc(uint8_t *data, size_t size)
     return 0;
 }
 
-int protobuf_commu_init(void)
+int sub_rpc_init(void)
 {
     uart_config_t uart_config = {
         .baud_rate = CONFIG_SUB_PROTOBUF_UART_BAUDRATE,
@@ -177,7 +177,7 @@ static void uart_event_task(void *pvParameters)
     vTaskDelete(NULL);
 }
 
-int protobuf_commu_start_thread(void)
+int sub_rpc_start_thread(void)
 {
     if (pdPASS == xTaskCreate(uart_event_task, "uart_event_task", 4096, NULL, 12, NULL))
         return 0;
@@ -207,7 +207,7 @@ static bool encode_unionmessage_resp(pb_ostream_t *stream, const pb_msgdesc_t *m
     return false;
 }
 
-int protobuf_commu_send_resp(const pb_msgdesc_t *messagetype, void *message)
+int sub_rpc_send_resp(const pb_msgdesc_t *messagetype, void *message)
 {
     uint8_t data[NAVI_MASTER_PB_H_MAX_SIZE];
     pb_ostream_t stream = pb_ostream_from_buffer(data, sizeof(data));

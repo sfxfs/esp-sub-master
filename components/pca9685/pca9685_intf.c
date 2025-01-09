@@ -56,16 +56,10 @@ i2c_master_dev_handle_t pca9685_i2c_dev_handle;
  */
 uint8_t pca9685_interface_iic_init(void)
 {
-#if CONFIG_SUB_ENABLE_PCA9685
     esp_err_t handle_ret;
     i2c_master_bus_handle_t pca9685_i2c_handle;
-    #if (CONFIG_SUB_PCA9685_IIC_PORT == 0) && CONFIG_SUB_ENABLE_I2C0
-    handle_ret = i2c_master_get_bus_handle(0, &pca9685_i2c_handle);
-    #elif (CONFIG_SUB_PCA9685_IIC_PORT == 1) && CONFIG_SUB_ENABLE_I2C1
-    handle_ret = i2c_master_get_bus_handle(1, &pca9685_i2c_handle);
-    #else
-    #error certain i2c num not found or disabled
-    #endif
+
+    handle_ret = i2c_master_get_bus_handle(CONFIG_SUB_PCA9685_IIC_PORT, &pca9685_i2c_handle);
     if (ESP_OK != handle_ret)
         return 1;   // interface not init
 
@@ -77,9 +71,6 @@ uint8_t pca9685_interface_iic_init(void)
         return 0;
     else
         return 1;   // NO_MEM
-#else
-    return 1;   // disabled
-#endif
 }
 
 /**
@@ -91,14 +82,10 @@ uint8_t pca9685_interface_iic_init(void)
  */
 uint8_t pca9685_interface_iic_deinit(void)
 {
-#if CONFIG_SUB_ENABLE_PCA9685
     if (ESP_OK == i2c_master_bus_rm_device(pca9685_i2c_dev_handle))
         return 0;
     else
         return 1;
-#else
-    return 1;   // disabled
-#endif
 }
 
 /**
@@ -114,7 +101,6 @@ uint8_t pca9685_interface_iic_deinit(void)
  */
 uint8_t pca9685_interface_iic_write(uint8_t addr, uint8_t reg, uint8_t *buf, uint16_t len)
 {
-#if CONFIG_SUB_ENABLE_PCA9685
     uint8_t *temp_buf = malloc(len + 1);
     if (NULL == temp_buf)
         return 1;
@@ -130,9 +116,6 @@ uint8_t pca9685_interface_iic_write(uint8_t addr, uint8_t reg, uint8_t *buf, uin
         return 0;
     else
         return 1;
-#else
-    return 1;   // disabled
-#endif
 }
 
 /**
@@ -148,14 +131,10 @@ uint8_t pca9685_interface_iic_write(uint8_t addr, uint8_t reg, uint8_t *buf, uin
  */
 uint8_t pca9685_interface_iic_read(uint8_t addr, uint8_t reg, uint8_t *buf, uint16_t len)
 {
-#if CONFIG_SUB_ENABLE_PCA9685
     if (ESP_OK == i2c_master_transmit_receive(pca9685_i2c_dev_handle, &reg, 1, buf, len, CONFIG_SUB_PCA9685_IIC_TIMEOUT))
         return 0;
     else
         return 1;
-#else
-    return 1;   // disabled
-#endif
 }
 
 /**
@@ -167,7 +146,7 @@ uint8_t pca9685_interface_iic_read(uint8_t addr, uint8_t reg, uint8_t *buf, uint
  */
 uint8_t pca9685_interface_oe_init(void)
 {
-#if CONFIG_SUB_ENABLE_PCA9685 && CONFIG_SUB_PCA9685_OE_GPIO_ENABLE
+#if CONFIG_SUB_PCA9685_OE_GPIO_ENABLE
     if (GPIO_IS_VALID_OUTPUT_GPIO(CONFIG_SUB_PCA9685_OE_GPIO_NUM) == false)
         return 1;
 
@@ -196,7 +175,7 @@ uint8_t pca9685_interface_oe_init(void)
  */
 uint8_t pca9685_interface_oe_deinit(void)
 {
-#if CONFIG_SUB_ENABLE_PCA9685 && CONFIG_SUB_PCA9685_OE_GPIO_ENABLE
+#if CONFIG_SUB_PCA9685_OE_GPIO_ENABLE
     if (ESP_OK == gpio_reset_pin(CONFIG_SUB_PCA9685_OE_GPIO_NUM))
         return 0;
     else
@@ -216,7 +195,7 @@ uint8_t pca9685_interface_oe_deinit(void)
  */
 uint8_t pca9685_interface_oe_write(uint8_t value)
 {
-#if CONFIG_SUB_ENABLE_PCA9685 && CONFIG_SUB_PCA9685_OE_GPIO_ENABLE
+#if CONFIG_SUB_PCA9685_OE_GPIO_ENABLE
     if (ESP_OK == gpio_set_level(CONFIG_SUB_PCA9685_OE_GPIO_NUM, value))
         return 0;
     else

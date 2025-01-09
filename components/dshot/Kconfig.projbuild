@@ -1,4 +1,4 @@
-menu "SUB:DSHOT"
+menu "DSHOT RMT Driver Configuration"
     depends on SOC_RMT_SUPPORTED
 
     config SUB_DSHOT_RESOLUTION
