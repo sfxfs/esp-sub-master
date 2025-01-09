@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2015 - present LibDriver All rights reserved
- * 
+ *
  * The MIT License (MIT)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,7 +19,7 @@
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE. 
+ * SOFTWARE.
  *
  * @file      driver_aht30_interface_template.c
  * @brief     driver aht30 interface template source file
@@ -60,7 +60,7 @@ uint8_t aht30_interface_iic_init(void)
 
     handle_ret = i2c_master_get_bus_handle(CONFIG_SUB_AHT30_IIC_PORT, &aht30_i2c_handle);
     if (ESP_OK != handle_ret)
-        return 1;   // interface not init
+        return 1; // interface not init
 
     i2c_device_config_t i2c_dev_conf = {
         .device_address = CONFIG_SUB_AHT30_IIC_ADDRESS,
@@ -69,7 +69,7 @@ uint8_t aht30_interface_iic_init(void)
     if (ESP_OK == i2c_master_bus_add_device(aht30_i2c_handle, &i2c_dev_conf, &aht30_i2c_dev_handle))
         return 0;
     else
-        return 1;   // NO_MEM
+        return 1; // NO_MEM
 }
 
 /**

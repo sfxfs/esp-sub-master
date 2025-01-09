@@ -15,7 +15,7 @@
 
 #include "sub_rpc.h"
 
-static const char *TAG = "protobuf_commu";
+static const char *TAG = "sub_rpc";
 
 static QueueHandle_t uart_queue;
 
@@ -45,7 +45,8 @@ static const pb_msgdesc_t *decode_command_unionmessage_type(pb_istream_t *stream
     return NULL;
 }
 
-static bool decode_unionmessage_contents(pb_istream_t *stream, const pb_msgdesc_t *messagetype, void *dest_struct)
+static bool decode_unionmessage_contents(pb_istream_t *stream,
+                                const pb_msgdesc_t *messagetype, void *dest_struct)
 {
     pb_istream_t substream;
     bool status;
@@ -101,12 +102,16 @@ int sub_rpc_init(void)
     if (ESP_OK != uart_param_config(CONFIG_SUB_PROTOBUF_UART_PORT, &uart_config))
         return -1;
 #if CONFIG_SUB_PROTOBUF_UART_CUSTOM_PINS
-    if (ESP_OK != uart_set_pin(CONFIG_SUB_PROTOBUF_UART_PORT, CONFIG_SUB_PROTOBUF_UART_TX_PIN, CONFIG_SUB_PROTOBUF_UART_RX_PIN, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE))
+    if (ESP_OK != uart_set_pin(CONFIG_SUB_PROTOBUF_UART_PORT,
+                CONFIG_SUB_PROTOBUF_UART_TX_PIN, CONFIG_SUB_PROTOBUF_UART_RX_PIN,
+                UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE))
         return -1;
 #endif
     if (uart_driver_install(CONFIG_SUB_PROTOBUF_UART_PORT,
-                            NAVI_MASTER_PB_H_MAX_SIZE * 2, NAVI_MASTER_PB_H_MAX_SIZE * 2,
-                            CONFIG_SUB_PROTOBUF_UART_QUEUE_SIZE, &uart_queue, 0) != ESP_OK)
+                            NAVI_MASTER_PB_H_MAX_SIZE * 2,
+                            NAVI_MASTER_PB_H_MAX_SIZE * 2,
+                            CONFIG_SUB_PROTOBUF_UART_QUEUE_SIZE,
+                            &uart_queue, 0) != ESP_OK)
     {
         ESP_LOGE(TAG, "Driver installation failed");
         return -1;
@@ -184,7 +189,8 @@ int sub_rpc_start_thread(void)
     return -1;
 }
 
-static bool encode_unionmessage_resp(pb_ostream_t *stream, const pb_msgdesc_t *messagetype, void *message)
+static bool encode_unionmessage_resp(pb_ostream_t *stream,
+                                    const pb_msgdesc_t *messagetype, void *message)
 {
     pb_field_iter_t iter;
 

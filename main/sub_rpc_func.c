@@ -1,4 +1,5 @@
 #include "esp_log.h"
+#include "driver/ledc.h"
 
 #include "dshot.h"
 #include "pca9685_app.h"
@@ -7,18 +8,64 @@
 
 #include "sub_rpc_func.h"
 
-static const char *TAG = "protobuf_commu_rpc_cmd";
+static const char *TAG = "sub_rpc_func";
 
+#if !CONFIG_SUB_PROTOBUF_THRUSTERS_USE_ANALOG_SINGALS
 static dshot_handle_t dshot_chan0, dshot_chan1, dshot_chan2, dshot_chan3,
                         dshot_chan4, dshot_chan5, dshot_chan6, dshot_chan7;
-
+#endif
 
 #if CONFIG_SUB_PROTOBUF_THRUSTERS_ENABLE
+
+#if CONFIG_SUB_PROTOBUF_THRUSTERS_USE_ANALOG_SINGALS
+static int ledc_init(ledc_channel_t channel, int io_num)
+{
+    // Prepare and then apply the LEDC PWM timer configuration
+    ledc_timer_config_t ledc_timer = {
+        .speed_mode       = LEDC_LOW_SPEED_MODE,
+        .duty_resolution  = LEDC_TIMER_13_BIT,
+        .timer_num        = LEDC_TIMER_0,
+        .freq_hz          = CONFIG_SUB_PROTOBUF_THRUSTERS_ANALOG_FREQ,  // Set output frequency at 4 kHz
+        .clk_cfg          = LEDC_AUTO_CLK
+    };
+    if (ESP_OK != ledc_timer_config(&ledc_timer))
+    {
+        ESP_LOGE(TAG, "ledc_timer_config failed");
+        return -1;
+    }
+
+    // Prepare and then apply the LEDC PWM channel configuration
+    ledc_channel_config_t ledc_channel = {
+        .speed_mode     = LEDC_LOW_SPEED_MODE,
+        .channel        = channel,
+        .timer_sel      = LEDC_TIMER_0,
+        .intr_type      = LEDC_INTR_DISABLE,
+        .gpio_num       = io_num,
+        .duty           = CONFIG_SUB_PROTOBUF_THRUSTERS_ANALOG_MID,
+        .hpoint         = 0
+    };
+    if (ESP_OK != ledc_channel_config(&ledc_channel))
+    {
+        ESP_LOGE(TAG, "ledc_channel_config failed");
+        return -1;
+    }
+    return 0;
+}
+#endif
 
 static int thruster_init(void)
 {
     int ret = 0;
-
+#if CONFIG_SUB_PROTOBUF_THRUSTERS_USE_ANALOG_SINGALS
+    ret += ledc_init(LEDC_CHANNEL_0, CONFIG_SUB_PROTOBUF_THRUSTER0_PIN);
+    ret += ledc_init(LEDC_CHANNEL_1, CONFIG_SUB_PROTOBUF_THRUSTER1_PIN);
+    ret += ledc_init(LEDC_CHANNEL_2, CONFIG_SUB_PROTOBUF_THRUSTER2_PIN);
+    ret += ledc_init(LEDC_CHANNEL_3, CONFIG_SUB_PROTOBUF_THRUSTER3_PIN);
+    ret += ledc_init(LEDC_CHANNEL_4, CONFIG_SUB_PROTOBUF_THRUSTER4_PIN);
+    ret += ledc_init(LEDC_CHANNEL_5, CONFIG_SUB_PROTOBUF_THRUSTER5_PIN);
+    ret += ledc_init(LEDC_CHANNEL_6, CONFIG_SUB_PROTOBUF_THRUSTER6_PIN);
+    ret += ledc_init(LEDC_CHANNEL_7, CONFIG_SUB_PROTOBUF_THRUSTER7_PIN);
+#else
     ret += rmt_dshot_init(&dshot_chan0, CONFIG_SUB_PROTOBUF_THRUSTER0_PIN);
     ret += rmt_dshot_init(&dshot_chan1, CONFIG_SUB_PROTOBUF_THRUSTER1_PIN);
     ret += rmt_dshot_init(&dshot_chan2, CONFIG_SUB_PROTOBUF_THRUSTER2_PIN);
@@ -27,11 +74,20 @@ static int thruster_init(void)
     ret += rmt_dshot_init(&dshot_chan5, CONFIG_SUB_PROTOBUF_THRUSTER5_PIN);
     ret += rmt_dshot_init(&dshot_chan6, CONFIG_SUB_PROTOBUF_THRUSTER6_PIN);
     ret += rmt_dshot_init(&dshot_chan7, CONFIG_SUB_PROTOBUF_THRUSTER7_PIN);
+#endif
     return ret;
 }
 
 static int thruster_write(int channel, float value)
 {
+#if CONFIG_SUB_PROTOBUF_THRUSTERS_USE_ANALOG_SINGALS
+    if (ESP_OK == ledc_set_duty(LEDC_LOW_SPEED_MODE, channel,
+        (value * CONFIG_SUB_PROTOBUF_THRUSTERS_ANALOG_MAX_OFFSET) +
+            CONFIG_SUB_PROTOBUF_THRUSTERS_ANALOG_MID))
+        if (ESP_OK == ledc_update_duty(LEDC_LOW_SPEED_MODE, channel))
+            return 0;
+    return -1;
+#else
     uint16_t value_int = (uint16_t)(value * 2000.f);
     switch (channel)
     {
@@ -45,9 +101,12 @@ static int thruster_write(int channel, float value)
     case 7:return rmt_dshot_write_throttle(dshot_chan7, value_int);
     default:return -1;
     }
+#endif
 }
 
 #endif
+
+#if CONFIG_SUB_PROTOBUF_PWM_DEVICE_ENABLE
 
 static int pwmDev_init(void)
 {
@@ -62,13 +121,15 @@ static int pwmDev_write(int channel, uint32_t value)
     return pca9685_app_write(channel, value);
 }
 
+#endif
+
 int sub_rpc_handle_func_init(void)
 {
     int ret = 0;
 #if CONFIG_SUB_PROTOBUF_THRUSTERS_ENABLE
     ret += thruster_init();
 #endif
-#if CONFIG_SUB_ENABLE_PCA9685
+#if CONFIG_SUB_PROTOBUF_PWM_DEVICE_ENABLE
     ret += pwmDev_init();
 #endif
     // other cmd init ...
@@ -77,9 +138,7 @@ int sub_rpc_handle_func_init(void)
 
 void handle_message_thruster_cmd(ThrusterCommand *msg)
 {
-#if !CONFIG_SUB_PROTOBUF_THRUSTERS_ENABLE
-    return;
-#endif
+#if CONFIG_SUB_PROTOBUF_THRUSTERS_ENABLE
     if (msg->has_throttle0)
     {
         ESP_LOGI(TAG, "dshot_chan0: %f", msg->throttle0);
@@ -120,13 +179,12 @@ void handle_message_thruster_cmd(ThrusterCommand *msg)
         ESP_LOGI(TAG, "dshot_chan7: %f", msg->throttle7);
         thruster_write(7, msg->throttle7);
     }
+#endif
 }
 
 void handle_message_pwmDev_cmd(PWMDevCommand *msg)
 {
-#if !CONFIG_SUB_ENABLE_PCA9685
-    return;
-#endif
+#if CONFIG_SUB_PROTOBUF_PWM_DEVICE_ENABLE
     if (msg->has_duty0)
     {
         ESP_LOGI(TAG, "pwm_chan0: %ld", msg->duty0);
@@ -207,4 +265,5 @@ void handle_message_pwmDev_cmd(PWMDevCommand *msg)
         ESP_LOGI(TAG, "pwm_chan15: %ld", msg->duty15);
         pwmDev_write(PCA9685_CHANNEL_15, msg->duty15);
     }
+#endif
 }

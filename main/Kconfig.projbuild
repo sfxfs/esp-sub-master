@@ -132,6 +132,32 @@ menu "SUB::ProtoBuf-RPC"
             help
                 Enable thrusters.
 
+        config SUB_PROTOBUF_THRUSTERS_USE_ANALOG_SINGALS
+            bool "Use analog signals"
+            default y
+            help
+                Use analog signals to control thrusters.
+
+        if SUB_PROTOBUF_THRUSTERS_USE_ANALOG_SINGALS
+            config SUB_PROTOBUF_THRUSTERS_ANALOG_FREQ
+                int "Set PWM frequency"
+                default 1000
+                help
+                    The frequency of analog signals.
+
+            config SUB_PROTOBUF_THRUSTERS_ANALOG_MID
+                int "Set PWM mid value"
+                default 1500
+                help
+                    The mid value of analog signals, means stop thruster.
+
+            config SUB_PROTOBUF_THRUSTERS_ANALOG_MAX_OFFSET
+                int "Set PWM max offset"
+                default 500
+                help
+                    The max offset of analog signals, add to mid value is max speed.
+        endif
+
         if SUB_PROTOBUF_THRUSTERS_ENABLE
             config SUB_PROTOBUF_THRUSTER0_PIN
                 int "Thruster0 pin"
@@ -181,6 +207,14 @@ menu "SUB::ProtoBuf-RPC"
                 help
                     The pin of thruster channel 7.
         endif
+    endmenu
+
+    menu "PWMDevice"
+        config SUB_PROTOBUF_PWM_DEVICE_ENABLE
+            bool "Enable PWM device"
+            default y
+            help
+                Enable PWM device.
     endmenu
 
 endmenu

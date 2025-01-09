@@ -6,5 +6,5 @@ idf_component_register(SRCS
                         "sub_intf_init.c"
                     INCLUDE_DIRS "."
                     PRIV_REQUIRES
-                        esp_driver_uart esp_driver_i2c esp_driver_spi # idf official components 
+                        esp_driver_uart esp_driver_i2c esp_driver_spi esp_driver_ledc esp_driver_gpio # idf official components 
                         nanopb pca9685 aht30 dshot) # third-party components

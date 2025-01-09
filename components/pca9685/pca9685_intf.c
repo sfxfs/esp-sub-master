@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2015 - present LibDriver All rights reserved
- * 
+ *
  * The MIT License (MIT)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,7 +19,7 @@
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE. 
+ * SOFTWARE.
  *
  * @file      driver_pca9685_interface_template.c
  * @brief     driver pca9685 interface template source file
@@ -61,7 +61,7 @@ uint8_t pca9685_interface_iic_init(void)
 
     handle_ret = i2c_master_get_bus_handle(CONFIG_SUB_PCA9685_IIC_PORT, &pca9685_i2c_handle);
     if (ESP_OK != handle_ret)
-        return 1;   // interface not init
+        return 1; // interface not init or not found
 
     i2c_device_config_t i2c_dev_conf = {
         .device_address = CONFIG_SUB_PCA9685_IIC_ADDRESS,
@@ -70,7 +70,7 @@ uint8_t pca9685_interface_iic_init(void)
     if (ESP_OK == i2c_master_bus_add_device(pca9685_i2c_handle, &i2c_dev_conf, &pca9685_i2c_dev_handle))
         return 0;
     else
-        return 1;   // NO_MEM
+        return 1; // NO_MEM
 }
 
 /**
@@ -153,7 +153,7 @@ uint8_t pca9685_interface_oe_init(void)
     gpio_config_t io_conf = {
         .intr_type = GPIO_INTR_DISABLE,
         .mode = GPIO_MODE_OUTPUT,
-        .pin_bit_mask = (1ULL<<CONFIG_SUB_PCA9685_OE_GPIO_NUM),
+        .pin_bit_mask = (1ULL << CONFIG_SUB_PCA9685_OE_GPIO_NUM),
         .pull_down_en = 0,
         .pull_up_en = 0,
     };
@@ -162,7 +162,7 @@ uint8_t pca9685_interface_oe_init(void)
     else
         return 1;
 #else
-    return 0;   // disabled
+    return 0; // disabled
 #endif
 }
 
@@ -181,7 +181,7 @@ uint8_t pca9685_interface_oe_deinit(void)
     else
         return 1;
 #else
-    return 0;   // disabled
+    return 0; // disabled
 #endif
 }
 
@@ -201,7 +201,7 @@ uint8_t pca9685_interface_oe_write(uint8_t value)
     else
         return 1;
 #else
-    return 0;   // disabled
+    return 0; // disabled
 #endif
 }
 
