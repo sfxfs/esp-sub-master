@@ -16,7 +16,7 @@ static const char *TAG = "main";
 void app_main(void)
 {
     // 各总线端口初始化 spi iic
-    if (0 != sub_bus_intf_init())
+    if (ESP_OK != sub_bus_intf_init())
     {
         for (;;)
         {
@@ -26,7 +26,7 @@ void app_main(void)
     }
 
     // protobuf通信用到的外设初始化
-    if (0 != sub_rpc_handle_func_init())
+    if (ESP_OK != sub_rpc_handle_func_init())
     {
         for (;;)
         {
@@ -36,7 +36,7 @@ void app_main(void)
     }
 
     // protobuf通信初始化
-    if (0 != sub_rpc_init())
+    if (ESP_OK != sub_rpc_init())
     {
         for (;;)
         {
@@ -46,7 +46,7 @@ void app_main(void)
     }
 
     // protobuf通信线程启动
-    if (0 != sub_rpc_start_thread())
+    if (ESP_OK != sub_rpc_start_thread())
     {
         for (;;)
         {

@@ -89,7 +89,7 @@ static int protobuf_command_rpc(uint8_t *data, size_t size)
     return 0;
 }
 
-int sub_rpc_init(void)
+esp_err_t sub_rpc_init(void)
 {
     uart_config_t uart_config = {
         .baud_rate = CONFIG_SUB_PROTOBUF_UART_BAUDRATE,
@@ -100,12 +100,12 @@ int sub_rpc_init(void)
         .source_clk = UART_SCLK_DEFAULT,
     };
     if (ESP_OK != uart_param_config(CONFIG_SUB_PROTOBUF_UART_PORT, &uart_config))
-        return -1;
+        return ESP_FAIL;
 #if CONFIG_SUB_PROTOBUF_UART_CUSTOM_PINS
     if (ESP_OK != uart_set_pin(CONFIG_SUB_PROTOBUF_UART_PORT,
                 CONFIG_SUB_PROTOBUF_UART_TX_PIN, CONFIG_SUB_PROTOBUF_UART_RX_PIN,
                 UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE))
-        return -1;
+        return ESP_FAIL;
 #endif
     if (uart_driver_install(CONFIG_SUB_PROTOBUF_UART_PORT,
                             NAVI_MASTER_PB_H_MAX_SIZE * 2,
@@ -114,9 +114,9 @@ int sub_rpc_init(void)
                             &uart_queue, 0) != ESP_OK)
     {
         ESP_LOGE(TAG, "Driver installation failed");
-        return -1;
+        return ESP_FAIL;
     }
-    return 0;
+    return ESP_OK;
 }
 
 static void uart_event_task(void *pvParameters)
@@ -182,11 +182,11 @@ static void uart_event_task(void *pvParameters)
     vTaskDelete(NULL);
 }
 
-int sub_rpc_start_thread(void)
+esp_err_t sub_rpc_start_thread(void)
 {
     if (pdPASS == xTaskCreate(uart_event_task, "uart_event_task", 4096, NULL, 12, NULL))
-        return 0;
-    return -1;
+        return ESP_OK;
+    return ESP_FAIL;
 }
 
 static bool encode_unionmessage_resp(pb_ostream_t *stream,
@@ -213,7 +213,7 @@ static bool encode_unionmessage_resp(pb_ostream_t *stream,
     return false;
 }
 
-int sub_rpc_send_resp(const pb_msgdesc_t *messagetype, void *message)
+esp_err_t sub_rpc_send_resp(const pb_msgdesc_t *messagetype, void *message)
 {
     uint8_t data[NAVI_MASTER_PB_H_MAX_SIZE];
     pb_ostream_t stream = pb_ostream_from_buffer(data, sizeof(data));
@@ -222,14 +222,14 @@ int sub_rpc_send_resp(const pb_msgdesc_t *messagetype, void *message)
     if (!status)
     {
         ESP_LOGW(TAG, "encoding failed");
-        return -1;
+        return ESP_FAIL;
     }
 
     if (uart_write_bytes(CONFIG_SUB_PROTOBUF_UART_PORT, data, stream.bytes_written) < 0)
     {
         ESP_LOGW(TAG, "protobuf uart write failed");
-        return -1;
+        return ESP_FAIL;
     }
     ESP_LOGD(TAG, "protobuf uart write success");
-    return 0;
+    return ESP_OK;
 }

@@ -18,44 +18,44 @@ static dshot_handle_t dshot_chan0, dshot_chan1, dshot_chan2, dshot_chan3,
 #if CONFIG_SUB_PROTOBUF_THRUSTERS_ENABLE
 
 #if CONFIG_SUB_PROTOBUF_THRUSTERS_USE_ANALOG_SINGALS
-static int ledc_init(ledc_channel_t channel, int io_num)
+static esp_err_t ledc_init(ledc_channel_t channel, int io_num)
 {
     // Prepare and then apply the LEDC PWM timer configuration
     ledc_timer_config_t ledc_timer = {
         .speed_mode       = LEDC_LOW_SPEED_MODE,
-        .duty_resolution  = LEDC_TIMER_13_BIT,
+        .duty_resolution  = LEDC_TIMER_13_BIT,  // 4096 max
         .timer_num        = LEDC_TIMER_0,
-        .freq_hz          = CONFIG_SUB_PROTOBUF_THRUSTERS_ANALOG_FREQ,  // Set output frequency at 4 kHz
+        .freq_hz          = CONFIG_SUB_PROTOBUF_THRUSTERS_ANALOG_FREQ,  // Set output frequency
         .clk_cfg          = LEDC_AUTO_CLK
     };
     if (ESP_OK != ledc_timer_config(&ledc_timer))
     {
         ESP_LOGE(TAG, "ledc_timer_config failed");
-        return -1;
+        return ESP_FAIL;
     }
 
     // Prepare and then apply the LEDC PWM channel configuration
     ledc_channel_config_t ledc_channel = {
         .speed_mode     = LEDC_LOW_SPEED_MODE,
-        .channel        = channel,
-        .timer_sel      = LEDC_TIMER_0,
+        .channel        = channel,  // 0 ~ 7
+        .timer_sel      = LEDC_TIMER_0, // we need the same freq in each channel, so we use same timer
         .intr_type      = LEDC_INTR_DISABLE,
         .gpio_num       = io_num,
-        .duty           = CONFIG_SUB_PROTOBUF_THRUSTERS_ANALOG_MID,
+        .duty           = CONFIG_SUB_PROTOBUF_THRUSTERS_ANALOG_MID, // give the mid signal to start the thrusters
         .hpoint         = 0
     };
     if (ESP_OK != ledc_channel_config(&ledc_channel))
     {
         ESP_LOGE(TAG, "ledc_channel_config failed");
-        return -1;
+        return ESP_FAIL;
     }
-    return 0;
+    return ESP_OK;
 }
 #endif
 
-static int thruster_init(void)
+static esp_err_t thruster_init(void)
 {
-    int ret = 0;
+    int ret = ESP_OK;
 #if CONFIG_SUB_PROTOBUF_THRUSTERS_USE_ANALOG_SINGALS
     ret += ledc_init(LEDC_CHANNEL_0, CONFIG_SUB_PROTOBUF_THRUSTER0_PIN);
     ret += ledc_init(LEDC_CHANNEL_1, CONFIG_SUB_PROTOBUF_THRUSTER1_PIN);
@@ -78,15 +78,15 @@ static int thruster_init(void)
     return ret;
 }
 
-static int thruster_write(int channel, float value)
+static esp_err_t thruster_write(int channel, float value)
 {
 #if CONFIG_SUB_PROTOBUF_THRUSTERS_USE_ANALOG_SINGALS
     if (ESP_OK == ledc_set_duty(LEDC_LOW_SPEED_MODE, channel,
         (value * CONFIG_SUB_PROTOBUF_THRUSTERS_ANALOG_MAX_OFFSET) +
             CONFIG_SUB_PROTOBUF_THRUSTERS_ANALOG_MID))
         if (ESP_OK == ledc_update_duty(LEDC_LOW_SPEED_MODE, channel))
-            return 0;
-    return -1;
+            return ESP_OK;
+    return ESP_FAIL;
 #else
     uint16_t value_int = (uint16_t)(value * 2000.f);
     switch (channel)
@@ -99,7 +99,7 @@ static int thruster_write(int channel, float value)
     case 5:return rmt_dshot_write_throttle(dshot_chan5, value_int);
     case 6:return rmt_dshot_write_throttle(dshot_chan6, value_int);
     case 7:return rmt_dshot_write_throttle(dshot_chan7, value_int);
-    default:return -1;
+    default:return ESP_FAIL;
     }
 #endif
 }
@@ -108,29 +108,37 @@ static int thruster_write(int channel, float value)
 
 #if CONFIG_SUB_PROTOBUF_PWM_DEVICE_ENABLE
 
-static int pwmDev_init(void)
+static esp_err_t pwmDev_init(void)
 {
     if (0 != pca9685_app_init(PCA9685_ADDRESS_A000000, 50)) // 50Hz
-        return -1;
+        return ESP_FAIL;
     // pca9685_app_write ...
-    return 0;
+    return ESP_OK;
 }
 
-static int pwmDev_write(int channel, uint32_t value)
+static esp_err_t pwmDev_write(int channel, uint32_t value)
 {
-    return pca9685_app_write(channel, value);
+    if (0 != pca9685_app_write(channel, value))
+        return ESP_FAIL;
+    return ESP_OK;
 }
 
 #endif
 
-int sub_rpc_handle_func_init(void)
+esp_err_t sub_rpc_handle_func_init(void)
 {
-    int ret = 0;
+    int ret = ESP_OK;
 #if CONFIG_SUB_PROTOBUF_THRUSTERS_ENABLE
-    ret += thruster_init();
+    if(ESP_OK != thruster_init())
+    {
+        ret = ESP_FAIL;
+    }
 #endif
 #if CONFIG_SUB_PROTOBUF_PWM_DEVICE_ENABLE
-    ret += pwmDev_init();
+    if(ESP_OK != pwmDev_init())
+    {
+        ret = ESP_FAIL;
+    }
 #endif
     // other cmd init ...
     return ret;
