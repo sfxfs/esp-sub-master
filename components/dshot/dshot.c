@@ -189,7 +189,7 @@ err:
     return ret;
 }
 
-int rmt_dshot_init(dshot_handle_t *handle, gpio_num_t gpio_num)
+esp_err_t rmt_dshot_init(dshot_handle_t *handle, gpio_num_t gpio_num)
 {
     rmt_tx_channel_config_t tx_chan_config = {
         .clk_src = RMT_CLK_SRC_DEFAULT, // select a clock that can provide needed resolution
@@ -200,7 +200,7 @@ int rmt_dshot_init(dshot_handle_t *handle, gpio_num_t gpio_num)
     };
     if (ESP_OK != rmt_new_tx_channel(&tx_chan_config, &handle->channel))
     {
-        return -1;
+        return ESP_FAIL;
     }
 
     dshot_esc_encoder_config_t encoder_config = {
@@ -210,12 +210,12 @@ int rmt_dshot_init(dshot_handle_t *handle, gpio_num_t gpio_num)
     };
     if (ESP_OK != rmt_new_dshot_esc_encoder(&encoder_config, &handle->encoder))
     {
-        return -1;
+        return ESP_FAIL;
     }
 
     if (ESP_OK != rmt_enable(handle->channel))
     {
-        return -1;
+        return ESP_FAIL;
     }
 
     rmt_transmit_config_t tx_config = {
@@ -227,13 +227,13 @@ int rmt_dshot_init(dshot_handle_t *handle, gpio_num_t gpio_num)
     };
     if (ESP_OK != rmt_transmit(handle->channel, handle->encoder, &throttle, sizeof(throttle), &tx_config))
     {
-        return -1;
+        return ESP_FAIL;
     }
 
-    return 0;
+    return ESP_OK;
 }
 
-int rmt_dshot_write_throttle(dshot_handle_t handle, uint16_t throttle)
+esp_err_t rmt_dshot_write_throttle(dshot_handle_t handle, uint16_t throttle)
 {
     rmt_transmit_config_t tx_config = {
         .loop_count = -1, // infinite loop
@@ -244,9 +244,9 @@ int rmt_dshot_write_throttle(dshot_handle_t handle, uint16_t throttle)
     };
     if (ESP_OK != rmt_transmit(handle.channel, handle.encoder, &throttleS, sizeof(throttle), &tx_config))
     {
-        return -1;
+        return ESP_FAIL;
     }
     rmt_disable(handle.channel);
     rmt_enable(handle.channel);
-    return 0;
+    return ESP_OK;
 }
