@@ -8,7 +8,7 @@ The **ESP-SUB-MASTER** project is a versatile underwater robot control program d
 
 - Serial communication with SUB-NAVI using Protocol Buffers
 - Control and read related peripherals through the MCU's peripheral interfaces
-- Hardware implementation of Dshot control for thrusters
+- Hardware implementation of Dshot, Oneshot control for thrusters
 - Visual project configuration based on `esp-menuconfig`
 
 ## Compilation

@@ -58,6 +58,33 @@ static bool decode_unionmessage_contents(pb_istream_t *stream,
     return status;
 }
 
+static bool encode_unionmessage_resp(pb_ostream_t *stream,
+                                    const pb_msgdesc_t *messagetype, void *message)
+{
+    pb_field_iter_t iter;
+
+    if (!pb_field_iter_begin(&iter, Responses_fields, message))
+        return false;
+
+    do
+    {
+        if (iter.submsg_desc == messagetype)
+        {
+            /* This is our field, encode the message using it. */
+            if (!pb_encode_tag_for_field(stream, &iter))
+                return false;
+
+            return pb_encode_submessage(stream, messagetype, message);
+        }
+    } while (pb_field_iter_next(&iter));
+
+    /* Didn't find the field for messagetype */
+    return false;
+}
+
+
+// --- functions in .h ---
+
 static int protobuf_command_rpc(uint8_t *data, size_t size)
 {
     pb_istream_t stream = pb_istream_from_buffer(data, size);
@@ -187,30 +214,6 @@ esp_err_t sub_rpc_start_thread(void)
     if (pdPASS == xTaskCreate(uart_event_task, "uart_event_task", 4096, NULL, 12, NULL))
         return ESP_OK;
     return ESP_FAIL;
-}
-
-static bool encode_unionmessage_resp(pb_ostream_t *stream,
-                                    const pb_msgdesc_t *messagetype, void *message)
-{
-    pb_field_iter_t iter;
-
-    if (!pb_field_iter_begin(&iter, Responses_fields, message))
-        return false;
-
-    do
-    {
-        if (iter.submsg_desc == messagetype)
-        {
-            /* This is our field, encode the message using it. */
-            if (!pb_encode_tag_for_field(stream, &iter))
-                return false;
-
-            return pb_encode_submessage(stream, messagetype, message);
-        }
-    } while (pb_field_iter_next(&iter));
-
-    /* Didn't find the field for messagetype */
-    return false;
 }
 
 esp_err_t sub_rpc_send_resp(const pb_msgdesc_t *messagetype, void *message)

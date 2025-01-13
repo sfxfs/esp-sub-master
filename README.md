@@ -10,7 +10,7 @@
 
 - 基于 Protocol Buffers 与 SUB-NAVI 进行串口通信
 - 通过 MCU 的外设接口控制和读取相关外设
-- 硬件实现 Dshot 控制推进器
+- 硬件实现 Dshot、Oneshot 控制推进器
 - 基于 `esp-menuconfig` 的可视化项目配置
 
 ## 编译
