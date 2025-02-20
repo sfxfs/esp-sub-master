@@ -85,6 +85,7 @@ menu "SUB::Bus Interface"
 endmenu
 
 menu "SUB::ProtoBuf-RPC"
+
     menu "Interface"
         config SUB_PROTOBUF_UART_PORT
             int "Which UARTx will be used"
@@ -214,7 +215,15 @@ menu "SUB::ProtoBuf-RPC"
             bool "Enable PWM device"
             default y
             help
-                Enable PWM device.
+                Enable PWM device use pca9685.
+
+        if SUB_PROTOBUF_PWM_DEVICE_ENABLE
+            config SUB_PROTOBUF_PWM_DEVICE_FERQENCY
+                int "Set PWM frequency"
+                default 50
+                help
+                    The frequency of PWM signal.
+        endif
     endmenu
 
 endmenu

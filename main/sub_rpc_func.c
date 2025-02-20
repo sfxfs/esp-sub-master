@@ -110,7 +110,7 @@ static esp_err_t thruster_write(int channel, float value)
 
 static esp_err_t pwmDev_init(void)
 {
-    if (0 != pca9685_app_init(PCA9685_ADDRESS_A000000, 50)) // 50Hz
+    if (0 != pca9685_app_init(PCA9685_ADDRESS_A000000, CONFIG_SUB_PROTOBUF_PWM_DEVICE_FERQENCY))
         return ESP_FAIL;
     // pca9685_app_write ...
     return ESP_OK;
