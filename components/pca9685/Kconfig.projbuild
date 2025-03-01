@@ -4,7 +4,7 @@ menu "PCA9685 Driver Configuration"
     config SUB_PCA9685_IIC_PORT
         int "Set PCA9685 IIC port"
         range 0 1
-        default 0
+        default 1
 
     config SUB_PCA9685_IIC_ADDRESS
         hex "Set PCA9685 IIC address"

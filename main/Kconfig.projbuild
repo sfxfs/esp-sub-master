@@ -11,28 +11,28 @@ menu "SUB::Bus Interface"
             if SUB_ENABLE_I2C0
                 config SUB_I2C0_SCL_PIN
                     int "Set SCL pin num"
-                    default 17
+                    default 37
 
                 config SUB_I2C0_SDA_PIN
                     int "Set SDA pin num"
-                    default 5
+                    default 36
             endif
         endmenu
 
         menu "I2C1 Config"
             config SUB_ENABLE_I2C1
                 bool "Enable interface"
-                default n
+                default y
 
             if SUB_ENABLE_I2C1
                 config SUB_I2C1_SCL_PIN
                     int "Set SCL pin num"
-                    default 8
+                    default 34
                     depends on SUB_ENABLE_I2C1
 
                 config SUB_I2C1_SDA_PIN
                     int "Set SDA pin num"
-                    default 9
+                    default 35
                     depends on SUB_ENABLE_I2C1
             endif
         endmenu
@@ -41,7 +41,7 @@ menu "SUB::Bus Interface"
     menu "Interface SPI"
         depends on SOC_GPSPI_SUPPORTED
 
-        menu "SPI2 Config"
+        menu "SPI2(HSPI) Config"
             config SUB_ENABLE_SPI2
                 bool "Enable interface"
                 default n
@@ -61,7 +61,7 @@ menu "SUB::Bus Interface"
             endif
         endmenu
 
-        menu "SPI3 Config"
+        menu "SPI3(VSPI) Config"
             config SUB_ENABLE_SPI3
                 bool "Enable interface"
                 default n
@@ -114,13 +114,13 @@ menu "SUB::ProtoBuf-RPC"
         if SUB_PROTOBUF_UART_CUSTOM_PINS
             config SUB_PROTOBUF_UART_TX_PIN
                 int "UARTx TX pin"
-                default 21
+                default 22
                 help
                     The TX pin of UARTx.
 
             config SUB_PROTOBUF_UART_RX_PIN
                 int "UARTx RX pin"
-                default 22
+                default 21
                 help
                     The RX pin of UARTx.
         endif
