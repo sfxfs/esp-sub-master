@@ -11,11 +11,11 @@ menu "SUB::Bus Interface"
             if SUB_ENABLE_I2C0
                 config SUB_I2C0_SCL_PIN
                     int "Set SCL pin num"
-                    default 37
+                    default 33
 
                 config SUB_I2C0_SDA_PIN
                     int "Set SDA pin num"
-                    default 36
+                    default 34
             endif
         endmenu
 
@@ -27,7 +27,7 @@ menu "SUB::Bus Interface"
             if SUB_ENABLE_I2C1
                 config SUB_I2C1_SCL_PIN
                     int "Set SCL pin num"
-                    default 34
+                    default 36
                     depends on SUB_ENABLE_I2C1
 
                 config SUB_I2C1_SDA_PIN
@@ -41,27 +41,27 @@ menu "SUB::Bus Interface"
     menu "Interface SPI"
         depends on SOC_GPSPI_SUPPORTED
 
-        menu "SPI2(HSPI) Config"
+        menu "SPI2(FSPI) Config"
             config SUB_ENABLE_SPI2
                 bool "Enable interface"
-                default n
+                default y
 
             if SUB_ENABLE_SPI2
                 config SUB_SPI2_CLK_PIN
                     int "Set CLK pin num"
-                    default 10
+                    default 2
 
                 config SUB_SPI2_MOSI_PIN
                     int "Set MOSI pin num"
-                    default 11
+                    default 3
 
                 config SUB_SPI2_MISO_PIN
                     int "Set MISO pin num"
-                    default 12
+                    default 4
             endif
         endmenu
 
-        menu "SPI3(VSPI) Config"
+        menu "SPI3 Config"
             config SUB_ENABLE_SPI3
                 bool "Enable interface"
                 default n
@@ -114,13 +114,13 @@ menu "SUB::ProtoBuf-RPC"
         if SUB_PROTOBUF_UART_CUSTOM_PINS
             config SUB_PROTOBUF_UART_TX_PIN
                 int "UARTx TX pin"
-                default 22
+                default 40
                 help
                     The TX pin of UARTx.
 
             config SUB_PROTOBUF_UART_RX_PIN
                 int "UARTx RX pin"
-                default 21
+                default 39
                 help
                     The RX pin of UARTx.
         endif
@@ -162,49 +162,49 @@ menu "SUB::ProtoBuf-RPC"
         if SUB_PROTOBUF_THRUSTERS_ENABLE
             config SUB_PROTOBUF_THRUSTER0_PIN
                 int "Thruster0 pin"
-                default 25
+                default 5
                 help
                     The pin of thruster channel 0.
 
             config SUB_PROTOBUF_THRUSTER1_PIN
                 int "Thruster1 pin"
-                default 26
+                default 6
                 help
                     The pin of thruster channel 1.
 
             config SUB_PROTOBUF_THRUSTER2_PIN
                 int "Thruster2 pin"
-                default 27
+                default 7
                 help
                     The pin of thruster channel 2.
 
             config SUB_PROTOBUF_THRUSTER3_PIN
                 int "Thruster3 pin"
-                default 14
+                default 8
                 help
                     The pin of thruster channel 3.
 
             config SUB_PROTOBUF_THRUSTER4_PIN
                 int "Thruster4 pin"
-                default 12
+                default 9
                 help
                     The pin of thruster channel 4.
 
             config SUB_PROTOBUF_THRUSTER5_PIN
                 int "Thruster5 pin"
-                default 13
+                default 10
                 help
                     The pin of thruster channel 5.
 
             config SUB_PROTOBUF_THRUSTER6_PIN
                 int "Thruster6 pin"
-                default 15
+                default 11
                 help
                     The pin of thruster channel 6.
 
             config SUB_PROTOBUF_THRUSTER7_PIN
                 int "Thruster7 pin"
-                default 2
+                default 12
                 help
                     The pin of thruster channel 7.
         endif
