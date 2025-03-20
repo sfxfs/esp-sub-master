@@ -36,7 +36,7 @@ menu "PCA9685 Driver Configuration"
 
     config SUB_PCA9685_USE_EXTERNAL_CLOCK
         bool "Use external clock"
-        default y
+        default n
         help
             Use external clock. If not, use internal RC clock.
 

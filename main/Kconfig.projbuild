@@ -114,13 +114,13 @@ menu "SUB::ProtoBuf-RPC"
         if SUB_PROTOBUF_UART_CUSTOM_PINS
             config SUB_PROTOBUF_UART_TX_PIN
                 int "UARTx TX pin"
-                default 1
+                default 3
                 help
                     The TX pin of UARTx.
 
             config SUB_PROTOBUF_UART_RX_PIN
                 int "UARTx RX pin"
-                default 3
+                default 1
                 help
                     The RX pin of UARTx.
         endif
