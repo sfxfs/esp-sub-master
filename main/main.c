@@ -24,36 +24,40 @@ void app_main(void)
             vTaskDelay(1000 / portTICK_PERIOD_MS);
         }
     }
+    ESP_LOGI(TAG, "sub_all_intf_init successed");
 
     // protobuf通信用到的外设初始化
     if (ESP_OK != sub_rpc_handle_func_init())
     {
         for (;;)
         {
-            ESP_LOGE(TAG, "message_cmd_init failed");
+            ESP_LOGE(TAG, "sub_rpc_handle_func_init failed");
             vTaskDelay(1000 / portTICK_PERIOD_MS);
         }
     }
+    ESP_LOGI(TAG, "sub_rpc_handle_func_init successed");
 
     // protobuf通信初始化
     if (ESP_OK != sub_rpc_init())
     {
         for (;;)
         {
-            ESP_LOGE(TAG, "protobuf_commu_init failed");
+            ESP_LOGE(TAG, "sub_rpc_init failed");
             vTaskDelay(1000 / portTICK_PERIOD_MS);
         }
     }
+    ESP_LOGI(TAG, "sub_rpc_init successed");
 
     // protobuf通信线程启动
     if (ESP_OK != sub_rpc_start_thread())
     {
         for (;;)
         {
-            ESP_LOGE(TAG, "protobuf_commu_start_thread failed");
+            ESP_LOGE(TAG, "sub_rpc_start_thread failed");
             vTaskDelay(1000 / portTICK_PERIOD_MS);
         }
     }
+    ESP_LOGI(TAG, "sub_rpc_start_thread successed");
 
     // 无限循环，发送心跳包
     for (;;)

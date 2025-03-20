@@ -134,12 +134,14 @@ esp_err_t sub_rpc_handle_func_init(void)
 #if CONFIG_SUB_PROTOBUF_THRUSTERS_ENABLE
     if(ESP_OK != thruster_init())
     {
+        ESP_LOGE(TAG, "thruster_init fail");
         ret = ESP_FAIL;
     }
 #endif
 #if CONFIG_SUB_PROTOBUF_PWM_DEVICE_ENABLE
     if(ESP_OK != pwmDev_init())
     {
+        ESP_LOGE(TAG, "pwmDev_init fail");
         ret = ESP_FAIL;
     }
 #endif
