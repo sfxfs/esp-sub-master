@@ -12,7 +12,7 @@ static const char *TAG = "sub_rpc_func";
 
 #if !CONFIG_SUB_PROTOBUF_THRUSTERS_USE_ANALOG_SINGALS
 static dshot_handle_t dshot_chan0, dshot_chan1, dshot_chan2, dshot_chan3,
-                        dshot_chan4, dshot_chan5, dshot_chan6, dshot_chan7;
+    dshot_chan4, dshot_chan5, dshot_chan6, dshot_chan7;
 #endif
 
 #if CONFIG_SUB_PROTOBUF_THRUSTERS_ENABLE
@@ -22,12 +22,11 @@ static esp_err_t ledc_init(ledc_channel_t channel, int io_num)
 {
     // Prepare and then apply the LEDC PWM timer configuration
     ledc_timer_config_t ledc_timer = {
-        .speed_mode       = LEDC_LOW_SPEED_MODE,
-        .duty_resolution  = LEDC_TIMER_13_BIT,  // 4096 max
-        .timer_num        = LEDC_TIMER_0,
-        .freq_hz          = CONFIG_SUB_PROTOBUF_THRUSTERS_ANALOG_FREQ,  // Set output frequency
-        .clk_cfg          = LEDC_AUTO_CLK
-    };
+        .speed_mode = LEDC_LOW_SPEED_MODE,
+        .duty_resolution = LEDC_TIMER_13_BIT, // 4096 max
+        .timer_num = LEDC_TIMER_0,
+        .freq_hz = CONFIG_SUB_PROTOBUF_THRUSTERS_ANALOG_FREQ, // Set output frequency
+        .clk_cfg = LEDC_AUTO_CLK};
     if (ESP_OK != ledc_timer_config(&ledc_timer))
     {
         ESP_LOGE(TAG, "ledc_timer_config failed");
@@ -36,14 +35,13 @@ static esp_err_t ledc_init(ledc_channel_t channel, int io_num)
 
     // Prepare and then apply the LEDC PWM channel configuration
     ledc_channel_config_t ledc_channel = {
-        .speed_mode     = LEDC_LOW_SPEED_MODE,
-        .channel        = channel,  // 0 ~ 7
-        .timer_sel      = LEDC_TIMER_0, // we need the same freq in each channel, so we use same timer
-        .intr_type      = LEDC_INTR_DISABLE,
-        .gpio_num       = io_num,
-        .duty           = CONFIG_SUB_PROTOBUF_THRUSTERS_ANALOG_MID, // give the mid signal to start the thrusters
-        .hpoint         = 0
-    };
+        .speed_mode = LEDC_LOW_SPEED_MODE,
+        .channel = channel,        // 0 ~ 7
+        .timer_sel = LEDC_TIMER_0, // we need the same freq in each channel, so we use same timer
+        .intr_type = LEDC_INTR_DISABLE,
+        .gpio_num = io_num,
+        .duty = CONFIG_SUB_PROTOBUF_THRUSTERS_ANALOG_MID, // give the mid signal to start the thrusters
+        .hpoint = 0};
     if (ESP_OK != ledc_channel_config(&ledc_channel))
     {
         ESP_LOGE(TAG, "ledc_channel_config failed");
@@ -82,8 +80,8 @@ static esp_err_t thruster_write(int channel, float value)
 {
 #if CONFIG_SUB_PROTOBUF_THRUSTERS_USE_ANALOG_SINGALS
     if (ESP_OK == ledc_set_duty(LEDC_LOW_SPEED_MODE, channel,
-        (value * CONFIG_SUB_PROTOBUF_THRUSTERS_ANALOG_MAX_OFFSET) +
-            CONFIG_SUB_PROTOBUF_THRUSTERS_ANALOG_MID))
+                                (value * CONFIG_SUB_PROTOBUF_THRUSTERS_ANALOG_MAX_OFFSET) +
+                                    CONFIG_SUB_PROTOBUF_THRUSTERS_ANALOG_MID))
         if (ESP_OK == ledc_update_duty(LEDC_LOW_SPEED_MODE, channel))
             return ESP_OK;
     return ESP_FAIL;
@@ -91,15 +89,24 @@ static esp_err_t thruster_write(int channel, float value)
     uint16_t value_int = (uint16_t)(value * 2000.f);
     switch (channel)
     {
-    case 0:return rmt_dshot_write_throttle(dshot_chan0, value_int);
-    case 1:return rmt_dshot_write_throttle(dshot_chan1, value_int);
-    case 2:return rmt_dshot_write_throttle(dshot_chan2, value_int);
-    case 3:return rmt_dshot_write_throttle(dshot_chan3, value_int);
-    case 4:return rmt_dshot_write_throttle(dshot_chan4, value_int);
-    case 5:return rmt_dshot_write_throttle(dshot_chan5, value_int);
-    case 6:return rmt_dshot_write_throttle(dshot_chan6, value_int);
-    case 7:return rmt_dshot_write_throttle(dshot_chan7, value_int);
-    default:return ESP_FAIL;
+    case 0:
+        return rmt_dshot_write_throttle(dshot_chan0, value_int);
+    case 1:
+        return rmt_dshot_write_throttle(dshot_chan1, value_int);
+    case 2:
+        return rmt_dshot_write_throttle(dshot_chan2, value_int);
+    case 3:
+        return rmt_dshot_write_throttle(dshot_chan3, value_int);
+    case 4:
+        return rmt_dshot_write_throttle(dshot_chan4, value_int);
+    case 5:
+        return rmt_dshot_write_throttle(dshot_chan5, value_int);
+    case 6:
+        return rmt_dshot_write_throttle(dshot_chan6, value_int);
+    case 7:
+        return rmt_dshot_write_throttle(dshot_chan7, value_int);
+    default:
+        return ESP_FAIL;
     }
 #endif
 }
@@ -125,25 +132,26 @@ static esp_err_t pwmDev_write(int channel, uint32_t value)
 
 #endif
 
-
 // --- functions in .h ---
 
 esp_err_t sub_rpc_handle_func_init(void)
 {
     int ret = ESP_OK;
 #if CONFIG_SUB_PROTOBUF_THRUSTERS_ENABLE
-    if(ESP_OK != thruster_init())
+    if (ESP_OK != thruster_init())
     {
         ESP_LOGE(TAG, "thruster_init fail");
         ret = ESP_FAIL;
     }
+    ESP_LOGI(TAG, "thruster_init success");
 #endif
 #if CONFIG_SUB_PROTOBUF_PWM_DEVICE_ENABLE
-    if(ESP_OK != pwmDev_init())
+    if (ESP_OK != pwmDev_init())
     {
         ESP_LOGE(TAG, "pwmDev_init fail");
         ret = ESP_FAIL;
     }
+    ESP_LOGI(TAG, "pwmDev_init success");
 #endif
     // other cmd init ...
     return ret;
@@ -255,7 +263,7 @@ void handle_message_pwmDev_cmd(PWMDevCommand *msg)
     }
     if (msg->has_duty11)
     {
-        ESP_LOGI(TAG, "pwm_chan11: %ld", msg->duty11);   
+        ESP_LOGI(TAG, "pwm_chan11: %ld", msg->duty11);
         pwmDev_write(11, msg->duty11);
     }
     if (msg->has_duty12)

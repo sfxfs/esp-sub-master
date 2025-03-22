@@ -63,12 +63,19 @@ esp_err_t sub_rpc_init(void)
         .source_clk = UART_SCLK_DEFAULT,
     };
     if (ESP_OK != uart_param_config(CONFIG_SUB_PROTOBUF_UART_PORT, &uart_config))
+    {
+        ESP_LOGE(TAG, "UART config failed");
         return ESP_FAIL;
+    }
 #if CONFIG_SUB_PROTOBUF_UART_CUSTOM_PINS
     if (ESP_OK != uart_set_pin(CONFIG_SUB_PROTOBUF_UART_PORT,
-                CONFIG_SUB_PROTOBUF_UART_TX_PIN, CONFIG_SUB_PROTOBUF_UART_RX_PIN,
-                UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE))
+                               CONFIG_SUB_PROTOBUF_UART_TX_PIN,
+                               CONFIG_SUB_PROTOBUF_UART_RX_PIN,
+                               UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE))
+    {
+        ESP_LOGE(TAG, "UART set pin failed");
         return ESP_FAIL;
+    }
 #endif
     if (uart_driver_install(CONFIG_SUB_PROTOBUF_UART_PORT,
                             NAVI_MASTER_PB_H_MAX_SIZE * 2,
@@ -76,16 +83,17 @@ esp_err_t sub_rpc_init(void)
                             CONFIG_SUB_PROTOBUF_UART_QUEUE_SIZE,
                             &uart_queue, 0) != ESP_OK)
     {
-        ESP_LOGE(TAG, "Driver installation failed");
+        ESP_LOGE(TAG, "UART driver installation failed");
         return ESP_FAIL;
     }
+    ESP_LOGI(TAG, "UART driver installed");
     return ESP_OK;
 }
 
 static void uart_event_task(void *pvParameters)
 {
     uart_event_t event;
-    uint8_t* dtmp = (uint8_t*) malloc(NAVI_MASTER_PB_H_MAX_SIZE);
+    uint8_t *dtmp = (uint8_t *)malloc(NAVI_MASTER_PB_H_MAX_SIZE);
     for (;;)
     {
         // Waiting for UART event.
@@ -166,9 +174,9 @@ esp_err_t sub_rpc_send_resp(const pb_msgdesc_t *messagetype, void *message)
 
     if (uart_write_bytes(CONFIG_SUB_PROTOBUF_UART_PORT, data, stream.bytes_written) < 0)
     {
-        ESP_LOGW(TAG, "protobuf uart write failed");
+        ESP_LOGW(TAG, "protobuf UART write failed");
         return ESP_FAIL;
     }
-    ESP_LOGD(TAG, "protobuf uart write success");
+    ESP_LOGD(TAG, "protobuf UART write success");
     return ESP_OK;
 }

@@ -26,6 +26,7 @@ esp_err_t sub_bus_intf_init(void)
         ESP_LOGE(TAG, "i2c0 init failed");
         return ESP_FAIL;
     }
+    ESP_LOGI(TAG, "i2c0 init success");
 }
 #endif
 #if CONFIG_SUB_ENABLE_I2C1
@@ -43,6 +44,7 @@ esp_err_t sub_bus_intf_init(void)
         ESP_LOGE(TAG, "i2c1 init failed");
         return ESP_FAIL;
     }
+    ESP_LOGI(TAG, "i2c1 init success");
 }
 #endif
 
@@ -62,6 +64,7 @@ esp_err_t sub_bus_intf_init(void)
         ESP_LOGE(TAG, "spi2 init failed");
         return ESP_FAIL;
     }
+    ESP_LOGI(TAG, "spi2 init success");
 }
 #endif
 #if CONFIG_SUB_ENABLE_SPI3
@@ -79,6 +82,7 @@ esp_err_t sub_bus_intf_init(void)
         ESP_LOGE(TAG, "spi3 init failed");
         return ESP_FAIL;
     }
+    ESP_LOGI(TAG, "spi3 init success");
 }
 #endif
     return ESP_OK;
