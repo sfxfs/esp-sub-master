@@ -39,7 +39,7 @@ static int protobuf_command_rpc(uint8_t *data, size_t size)
     {
         PWMDevCommand msg = {};
         status = decode_unionmessage_contents(&stream, PWMDevCommand_fields, &msg);
-        ESP_LOGI(TAG, "Got ArmCommand");
+        ESP_LOGI(TAG, "Got PWMDevCommand");
         handle_message_pwmDev_cmd(&msg);
     }
 

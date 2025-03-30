@@ -12,13 +12,16 @@ static const char *TAG = "sub_rpc_func";
 
 #if !CONFIG_SUB_PROTOBUF_THRUSTERS_USE_ANALOG_SINGALS
 static dshot_handle_t dshot_chan0, dshot_chan1, dshot_chan2, dshot_chan3,
-    dshot_chan4, dshot_chan5, dshot_chan6, dshot_chan7;
+#if CONFIG_IDF_TARGET_ESP32 // only ESP32 has 8 channels
+    dshot_chan4, dshot_chan5, dshot_chan6, dshot_chan7
+#endif
+    ;
 #endif
 
 #if CONFIG_SUB_PROTOBUF_THRUSTERS_ENABLE
 
 #if CONFIG_SUB_PROTOBUF_THRUSTERS_USE_ANALOG_SINGALS
-static esp_err_t ledc_init(ledc_channel_t channel, int io_num)
+static esp_err_t timer_init()
 {
     // Prepare and then apply the LEDC PWM timer configuration
     ledc_timer_config_t ledc_timer = {
@@ -32,7 +35,11 @@ static esp_err_t ledc_init(ledc_channel_t channel, int io_num)
         ESP_LOGE(TAG, "ledc_timer_config failed");
         return ESP_FAIL;
     }
+    return ESP_OK;
+}
 
+static esp_err_t ledc_init(ledc_channel_t channel, int io_num)
+{
     // Prepare and then apply the LEDC PWM channel configuration
     ledc_channel_config_t ledc_channel = {
         .speed_mode = LEDC_LOW_SPEED_MODE,
@@ -53,7 +60,7 @@ static esp_err_t ledc_init(ledc_channel_t channel, int io_num)
 
 static esp_err_t thruster_init(void)
 {
-    int ret = ESP_OK;
+    int ret = timer_init();
 #if CONFIG_SUB_PROTOBUF_THRUSTERS_USE_ANALOG_SINGALS
     ret += ledc_init(LEDC_CHANNEL_0, CONFIG_SUB_PROTOBUF_THRUSTER0_PIN);
     ret += ledc_init(LEDC_CHANNEL_1, CONFIG_SUB_PROTOBUF_THRUSTER1_PIN);
@@ -68,10 +75,12 @@ static esp_err_t thruster_init(void)
     ret += rmt_dshot_init(&dshot_chan1, CONFIG_SUB_PROTOBUF_THRUSTER1_PIN);
     ret += rmt_dshot_init(&dshot_chan2, CONFIG_SUB_PROTOBUF_THRUSTER2_PIN);
     ret += rmt_dshot_init(&dshot_chan3, CONFIG_SUB_PROTOBUF_THRUSTER3_PIN);
+#if CONFIG_IDF_TARGET_ESP32
     ret += rmt_dshot_init(&dshot_chan4, CONFIG_SUB_PROTOBUF_THRUSTER4_PIN);
     ret += rmt_dshot_init(&dshot_chan5, CONFIG_SUB_PROTOBUF_THRUSTER5_PIN);
     ret += rmt_dshot_init(&dshot_chan6, CONFIG_SUB_PROTOBUF_THRUSTER6_PIN);
     ret += rmt_dshot_init(&dshot_chan7, CONFIG_SUB_PROTOBUF_THRUSTER7_PIN);
+#endif
 #endif
     return ret;
 }
@@ -97,6 +106,7 @@ static esp_err_t thruster_write(int channel, float value)
         return rmt_dshot_write_throttle(dshot_chan2, value_int);
     case 3:
         return rmt_dshot_write_throttle(dshot_chan3, value_int);
+#if CONFIG_IDF_TARGET_ESP32
     case 4:
         return rmt_dshot_write_throttle(dshot_chan4, value_int);
     case 5:
@@ -105,6 +115,7 @@ static esp_err_t thruster_write(int channel, float value)
         return rmt_dshot_write_throttle(dshot_chan6, value_int);
     case 7:
         return rmt_dshot_write_throttle(dshot_chan7, value_int);
+#endif
     default:
         return ESP_FAIL;
     }
@@ -126,7 +137,10 @@ static esp_err_t pwmDev_init(void)
 static esp_err_t pwmDev_write(int channel, uint32_t value)
 {
     if (0 != pca9685_app_write(channel, value))
+    {
+        ESP_LOGE(TAG, "pwmDev channel %d write fail", channel);
         return ESP_FAIL;
+    }
     return ESP_OK;
 }
 
@@ -162,42 +176,42 @@ void handle_message_thruster_cmd(ThrusterCommand *msg)
 #if CONFIG_SUB_PROTOBUF_THRUSTERS_ENABLE
     if (msg->has_throttle0)
     {
-        ESP_LOGI(TAG, "dshot_chan0: %f", msg->throttle0);
+        ESP_LOGI(TAG, "shot_chan0: %f", msg->throttle0);
         thruster_write(0, msg->throttle0);
     }
     if (msg->has_throttle1)
     {
-        ESP_LOGI(TAG, "dshot_chan1: %f", msg->throttle1);
+        ESP_LOGI(TAG, "shot_chan1: %f", msg->throttle1);
         thruster_write(1, msg->throttle1);
     }
     if (msg->has_throttle2)
     {
-        ESP_LOGI(TAG, "dshot_chan2: %f", msg->throttle2);
+        ESP_LOGI(TAG, "shot_chan2: %f", msg->throttle2);
         thruster_write(2, msg->throttle2);
     }
     if (msg->has_throttle3)
     {
-        ESP_LOGI(TAG, "dshot_chan3: %f", msg->throttle3);
+        ESP_LOGI(TAG, "shot_chan3: %f", msg->throttle3);
         thruster_write(3, msg->throttle3);
     }
     if (msg->has_throttle4)
     {
-        ESP_LOGI(TAG, "dshot_chan4: %f", msg->throttle4);
+        ESP_LOGI(TAG, "shot_chan4: %f", msg->throttle4);
         thruster_write(4, msg->throttle4);
     }
     if (msg->has_throttle5)
     {
-        ESP_LOGI(TAG, "dshot_chan5: %f", msg->throttle5);
+        ESP_LOGI(TAG, "shot_chan5: %f", msg->throttle5);
         thruster_write(5, msg->throttle5);
     }
     if (msg->has_throttle6)
     {
-        ESP_LOGI(TAG, "dshot_chan6: %f", msg->throttle6);
+        ESP_LOGI(TAG, "shot_chan6: %f", msg->throttle6);
         thruster_write(6, msg->throttle6);
     }
     if (msg->has_throttle7)
     {
-        ESP_LOGI(TAG, "dshot_chan7: %f", msg->throttle7);
+        ESP_LOGI(TAG, "shot_chan7: %f", msg->throttle7);
         thruster_write(7, msg->throttle7);
     }
 #endif
