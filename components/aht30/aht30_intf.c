@@ -55,11 +55,9 @@ static i2c_master_dev_handle_t aht30_i2c_dev_handle;
  */
 uint8_t aht30_interface_iic_init(void)
 {
-    esp_err_t handle_ret;
     i2c_master_bus_handle_t aht30_i2c_handle;
 
-    handle_ret = i2c_master_get_bus_handle(CONFIG_SUB_AHT30_IIC_PORT, &aht30_i2c_handle);   // idf v5.3.2
-    if (ESP_OK != handle_ret)
+    if (ESP_OK != i2c_master_get_bus_handle(CONFIG_SUB_AHT30_IIC_PORT, &aht30_i2c_handle))   // idf v5.3.2
         return 1; // interface not init
 
     i2c_device_config_t i2c_dev_conf = {

@@ -1,0 +1,32 @@
+menu "JY901 Driver Configuration"
+    depends on SOC_I2C_SUPPORTED
+
+    config SUB_JY901_IIC_PORT
+        int "Set IIC port"
+        range 0 1
+        default 0
+
+    config SUB_JY901_IIC_ADDRESS
+        hex "Set IIC address"
+        range 0 0x7f # 7bit address
+        default 0x50
+
+    config SUB_JY901_IIC_FREQUENCY
+        int "Set IIC freq"
+        range 100000 2000000
+        default 400000
+
+    config SUB_JY901_IIC_TIMEOUT
+        int "Set IIC timeout"
+        default 50
+        help
+            Wait timeout, in ms. Note: -1 means wait forever.
+
+    config SUB_JY901_ROUTINE_PER_MS
+        int "Set routine period"
+        range 1 1000
+        default 20
+        help
+            The period of the routine, in ms.
+
+endmenu

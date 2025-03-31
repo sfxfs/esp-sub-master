@@ -6,6 +6,8 @@
 #include "freertos/task.h"
 #include "esp_log.h"
 
+#include "jy901.h"
+
 // main
 #include "sub_rpc.h"
 #include "sub_rpc_func.h"
@@ -47,6 +49,15 @@ void app_main(void)
         }
     }
     ESP_LOGI(TAG, "sub_rpc_init successed");
+
+    // JY901初始化
+    if (ESP_OK == jy901_init())
+        if (ESP_OK == jy901_routine_start())
+            ESP_LOGI(TAG, "jy901_routine_start success");
+        else
+            ESP_LOGE(TAG, "jy901_routine_start fail");
+    else
+        ESP_LOGE(TAG, "jy901_init fail");
 
     // protobuf通信线程启动
     if (ESP_OK != sub_rpc_start_thread())

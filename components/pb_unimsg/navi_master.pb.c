@@ -18,9 +18,10 @@ PB_BIND(Commands, Commands, AUTO)
 PB_BIND(DepthSensorResponse, DepthSensorResponse, AUTO)
 
 
-PB_BIND(PressureSensorResponse, PressureSensorResponse, AUTO)
+PB_BIND(MotionSensorResponse, MotionSensorResponse, AUTO)
 
 
 PB_BIND(Responses, Responses, AUTO)
+
 
 

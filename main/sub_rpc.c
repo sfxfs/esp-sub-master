@@ -6,8 +6,6 @@
 #include "driver/uart.h"
 
 #include "pb_decode.h"
-#include "pb_encode.h"
-
 #include "pb_unimsg.h"
 #include "navi_master.pb.h"
 
@@ -158,25 +156,4 @@ esp_err_t sub_rpc_start_thread(void)
     if (pdPASS == xTaskCreate(uart_event_task, "uart_event_task", 4096, NULL, 12, NULL))
         return ESP_OK;
     return ESP_FAIL;
-}
-
-esp_err_t sub_rpc_send_resp(const pb_msgdesc_t *messagetype, void *message)
-{
-    uint8_t data[NAVI_MASTER_PB_H_MAX_SIZE];
-    pb_ostream_t stream = pb_ostream_from_buffer(data, sizeof(data));
-
-    bool status = encode_response_unionmessage(&stream, messagetype, message);
-    if (!status)
-    {
-        ESP_LOGW(TAG, "encoding failed");
-        return ESP_FAIL;
-    }
-
-    if (uart_write_bytes(CONFIG_SUB_PROTOBUF_UART_PORT, data, stream.bytes_written) < 0)
-    {
-        ESP_LOGW(TAG, "protobuf UART write failed");
-        return ESP_FAIL;
-    }
-    ESP_LOGD(TAG, "protobuf UART write success");
-    return ESP_OK;
 }

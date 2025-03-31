@@ -56,11 +56,9 @@ static i2c_master_dev_handle_t pca9685_i2c_dev_handle;
  */
 uint8_t pca9685_interface_iic_init(void)
 {
-    esp_err_t handle_ret;
     i2c_master_bus_handle_t pca9685_i2c_handle;
 
-    handle_ret = i2c_master_get_bus_handle(CONFIG_SUB_PCA9685_IIC_PORT, &pca9685_i2c_handle); // idf v5.3.2
-    if (ESP_OK != handle_ret)
+    if (ESP_OK != i2c_master_get_bus_handle(CONFIG_SUB_PCA9685_IIC_PORT, &pca9685_i2c_handle)) // idf v5.3.2
         return 1; // interface not init or not found
 
     i2c_device_config_t i2c_dev_conf = {

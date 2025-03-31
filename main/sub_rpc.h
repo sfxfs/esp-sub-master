@@ -7,6 +7,5 @@
 
 esp_err_t sub_rpc_init(void);
 esp_err_t sub_rpc_start_thread(void);
-esp_err_t sub_rpc_send_resp(const pb_msgdesc_t *messagetype, void *message);
 
 #endif
