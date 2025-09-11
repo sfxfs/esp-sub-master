@@ -1,3 +1,9 @@
-build/
+managed_components/
+build*/
 sdkconfig
 sdkconfig.old
+
+.vscode/
+.idea/
+.DS_Store
+.devcontainer/

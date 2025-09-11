@@ -1,2 +1,10 @@
-idf_component_register(SRCS "main.c"
-                    INCLUDE_DIRS ".")
+idf_component_register(SRCS
+                        "main.cpp"
+                        "execution/ledc.cpp"
+                        "execution/pca9685.cpp"
+                        "execution/exe_intf.cpp"
+                    INCLUDE_DIRS
+                        "."
+                    PRIV_REQUIRES
+                        driver
+                        esp-idf-lib__pca9685)
