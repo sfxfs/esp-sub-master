@@ -73,5 +73,5 @@ direct_dependencies:
 - esp-idf-lib/pca9685
 - idf
 manifest_hash: 039863a6d5ed6a87d2ea44c597c6c4461032d36c2fcad2fb1dfc6c13049716be
-target: esp32s3
+target: esp32
 version: 2.0.0
