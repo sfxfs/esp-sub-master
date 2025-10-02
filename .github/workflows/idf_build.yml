@@ -8,20 +8,16 @@ on:
   pull_request:
     branches: [ "main" ]
 
-env:
-  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  BUILD_TYPE: Release
-
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
+    name: Build Firmware of ESP32
     steps:
     - name: Checkout repo
       uses: actions/checkout@v2
       with:
         submodules: 'recursive'
+
     - name: esp-idf build
       uses: espressif/esp-idf-ci-action@v1
       with:
